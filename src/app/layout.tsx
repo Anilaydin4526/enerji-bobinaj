@@ -35,9 +35,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-blue-100 via-white to-orange-100`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-blue-100 via-white to-orange-100 w-full min-h-screen`}>
         <Navbar />
-        <div className="pt-20 min-h-screen flex flex-col">
+        <div className="pt-20 min-h-screen flex flex-col w-full bg-gradient-to-br from-blue-100 via-white to-orange-100">
           {children}
         </div>
         <Footer />
