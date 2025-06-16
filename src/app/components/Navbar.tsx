@@ -21,10 +21,10 @@ export default function Navbar() {
       transition={{ duration: 0.7 }}
       className="fixed top-0 left-0 w-full z-50 bg-white/80 backdrop-blur shadow-md"
     >
-      <div className="max-w-6xl mx-auto flex items-center justify-between px-4 py-3">
-        <div className="flex items-center gap-2">
-          <img src="/logo.png" alt="Enerji Bobinaj Logo" className="h-10 w-10 object-contain" />
-          <Link href="/#hero" className="text-2xl font-bold text-orange-600 tracking-tight">Enerji Bobinaj</Link>
+      <div className="max-w-6xl mx-auto flex items-center justify-between px-2 sm:px-4 py-2 sm:py-3">
+        <div className="flex items-center gap-2 sm:gap-2 min-w-0">
+          <img src="/logo.png" alt="Enerji Bobinaj Logo" className="h-8 w-8 sm:h-10 sm:w-10 object-contain" />
+          <Link href="/#hero" className="truncate text-lg sm:text-2xl font-bold text-orange-600 tracking-tight">Enerji Bobinaj</Link>
         </div>
         <button
           className="sm:hidden flex flex-col justify-center items-center w-10 h-10 focus:outline-none"
