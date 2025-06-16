@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useState } from "react";
 
 const navLinks = [
   { name: "Anasayfa", href: "/#hero" },
@@ -12,6 +13,7 @@ const navLinks = [
 ];
 
 export default function Navbar() {
+  const [menuOpen, setMenuOpen] = useState(false);
   return (
     <motion.nav
       initial={{ y: -60, opacity: 0 }}
@@ -24,7 +26,16 @@ export default function Navbar() {
           <img src="/logo.png" alt="Enerji Bobinaj Logo" className="h-10 w-10 object-contain" />
           <Link href="/#hero" className="text-2xl font-bold text-orange-600 tracking-tight">Enerji Bobinaj</Link>
         </div>
-        <div className="flex gap-4">
+        <button
+          className="sm:hidden flex flex-col justify-center items-center w-10 h-10 focus:outline-none"
+          onClick={() => setMenuOpen(!menuOpen)}
+          aria-label="Menüyü Aç/Kapat"
+        >
+          <span className={`block w-7 h-1 bg-blue-900 rounded transition-all duration-300 ${menuOpen ? 'rotate-45 translate-y-2' : ''}`}></span>
+          <span className={`block w-7 h-1 bg-blue-900 rounded my-1 transition-all duration-300 ${menuOpen ? 'opacity-0' : ''}`}></span>
+          <span className={`block w-7 h-1 bg-blue-900 rounded transition-all duration-300 ${menuOpen ? '-rotate-45 -translate-y-2' : ''}`}></span>
+        </button>
+        <div className="hidden sm:flex gap-4">
           {navLinks.map((link) => (
             <motion.span
               key={link.name}
@@ -37,6 +48,22 @@ export default function Navbar() {
           ))}
         </div>
       </div>
+      {menuOpen && (
+        <div className="sm:hidden bg-white/95 shadow-md px-4 py-3 flex flex-col gap-2">
+          {navLinks.map((link) => (
+            <span
+              key={link.name}
+              className="text-blue-900 font-medium px-2 py-2 rounded hover:bg-orange-100 transition-colors cursor-pointer"
+              onClick={() => {
+                setMenuOpen(false);
+                window.location.href = link.href;
+              }}
+            >
+              {link.name}
+            </span>
+          ))}
+        </div>
+      )}
     </motion.nav>
   );
 } 
