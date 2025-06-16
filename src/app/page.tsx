@@ -5,15 +5,15 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 flex flex-col">
-      <div className="pt-20">
+    <div className="w-full min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 flex flex-col overflow-x-hidden">
+      <div className="pt-20 w-full">
         {/* HERO SECTION */}
-        <section id="hero" className="relative flex-1 flex flex-col items-center justify-center text-center py-16 sm:py-32 overflow-hidden">
+        <section id="hero" className="relative flex-1 flex flex-col items-center justify-center text-center min-h-screen w-full py-16 sm:py-32 overflow-hidden">
           <Image
             src="/hero-bobinaj.jpg"
             alt="Enerji Bobinaj Hero"
             fill
-            className="object-cover object-center absolute inset-0 opacity-40 -z-10"
+            className="object-cover object-center absolute inset-0 opacity-40 -z-10 w-full h-full"
           />
           <motion.h1
             initial={{ opacity: 0, y: 40 }}
