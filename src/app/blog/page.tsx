@@ -29,7 +29,7 @@ export default function Blog() {
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 p-8 flex flex-col items-center">
       <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7 }} className="text-4xl font-bold text-blue-900 mb-12 text-center">Blog</motion.h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
-        {bloglar.map((blog, i) => (
+        {bloglar.map((blog) => (
           <Link key={blog.id} href={`/blog/${blog.id}`} passHref legacyBehavior>
             <motion.a
               whileHover={{ scale: 1.04, boxShadow: "0 8px 32px #0002" }}

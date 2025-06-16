@@ -3,15 +3,6 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
-const navLinks = [
-  { name: "Anasayfa", href: "#hero" },
-  { name: "Hizmetler", href: "#hizmetler" },
-  { name: "Galeri", href: "#galeri" },
-  { name: "Hakkımızda", href: "#hakkimizda" },
-  { name: "İletişim", href: "#iletisim" },
-  { name: "Blog", href: "/blog" },
-];
-
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 flex flex-col">
