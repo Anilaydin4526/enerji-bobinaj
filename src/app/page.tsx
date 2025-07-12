@@ -136,7 +136,7 @@ export default function Home() {
                   >
                     <Image
                       src={item.imageUrl}
-                      alt={item.title}
+                      alt={item.title || "Galeri görseli"}
                       width={300}
                       height={200}
                       className="object-cover w-full h-32 sm:h-40"
