@@ -1,12 +1,11 @@
 const { PrismaClient } = require('@prisma/client')
-const { createHash, randomBytes } = require('crypto')
+const crypto = require('crypto')
 
 const prisma = new PrismaClient()
 
 async function hashPassword(password) {
-  const salt = randomBytes(16).toString('hex')
-  const hash = createHash('sha256').update(password + salt).digest('hex')
-  return salt + ':' + hash
+  const hash = crypto.createHash('sha256').update(password).digest('hex')
+  return hash
 }
 
 async function createAdmin() {

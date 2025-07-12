@@ -1,5 +1,4 @@
 import { SignJWT, jwtVerify } from 'jose'
-import { createHash, randomBytes } from 'crypto'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret'
 
@@ -27,13 +26,19 @@ export async function verifyToken(token: string): Promise<JWTPayload | null> {
 }
 
 export async function hashPassword(password: string): Promise<string> {
-  const salt = randomBytes(16).toString('hex')
-  const hash = createHash('sha256').update(password + salt).digest('hex')
-  return salt + ':' + hash
+  const encoder = new TextEncoder()
+  const data = encoder.encode(password)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+  return hashHex
 }
 
 export async function comparePassword(password: string, hashedPassword: string): Promise<boolean> {
-  const [salt, hash] = hashedPassword.split(':')
-  const passwordHash = createHash('sha256').update(password + salt).digest('hex')
-  return hash === passwordHash
+  const encoder = new TextEncoder()
+  const data = encoder.encode(password)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
+  return hashHex === hashedPassword
 } 
