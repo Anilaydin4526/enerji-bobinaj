@@ -157,9 +157,15 @@ export default function BlogManagement() {
                     if (!file) return;
                     const formData = new FormData();
                     formData.append('file', file);
-                    const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                    formData.append('upload_preset', 'enerjibobinaj');
+                    const url = 'https://api.cloudinary.com/v1_1/dejdb80bv/auto/upload';
+                    const res = await fetch(url, { method: 'POST', body: formData });
                     const data = await res.json();
-                    if (data.url) setFormData(f => ({ ...f, image: data.url }));
+                    if (data.secure_url) {
+                      setFormData(f => ({ ...f, image: data.secure_url }));
+                    } else {
+                      alert('Yükleme hatası: ' + (data.error?.message || 'Bilinmeyen hata'));
+                    }
                   }}
                   className="mb-2"
                 />
