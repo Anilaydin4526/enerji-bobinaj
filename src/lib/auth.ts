@@ -1,5 +1,5 @@
-import jwt from 'jsonwebtoken'
-import bcrypt from 'bcryptjs'
+import { SignJWT, jwtVerify } from 'jose'
+import { createHash, randomBytes } from 'crypto'
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret'
 
@@ -8,22 +8,32 @@ export interface JWTPayload {
   username: string
 }
 
-export function generateToken(payload: JWTPayload): string {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '24h' })
+export async function generateToken(payload: JWTPayload): Promise<string> {
+  const secret = new TextEncoder().encode(JWT_SECRET)
+  return new SignJWT(payload as any)
+    .setProtectedHeader({ alg: 'HS256' })
+    .setExpirationTime('24h')
+    .sign(secret)
 }
 
-export function verifyToken(token: string): JWTPayload | null {
+export async function verifyToken(token: string): Promise<JWTPayload | null> {
   try {
-    return jwt.verify(token, JWT_SECRET) as JWTPayload
+    const secret = new TextEncoder().encode(JWT_SECRET)
+    const { payload } = await jwtVerify(token, secret)
+    return payload as unknown as JWTPayload
   } catch {
     return null
   }
 }
 
 export async function hashPassword(password: string): Promise<string> {
-  return bcrypt.hash(password, 12)
+  const salt = randomBytes(16).toString('hex')
+  const hash = createHash('sha256').update(password + salt).digest('hex')
+  return salt + ':' + hash
 }
 
 export async function comparePassword(password: string, hashedPassword: string): Promise<boolean> {
-  return bcrypt.compare(password, hashedPassword)
+  const [salt, hash] = hashedPassword.split(':')
+  const passwordHash = createHash('sha256').update(password + salt).digest('hex')
+  return hash === passwordHash
 } 
