@@ -1,5 +1,6 @@
 "use client";
 import { motion } from "framer-motion";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -12,6 +13,7 @@ export default function Footer() {
       <div className="max-w-4xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
         <span className="font-semibold">© {new Date().getFullYear()} Enerji Bobinaj</span>
         <span className="text-sm">Tasarım & Kodlama: AI + İnsan</span>
+        <Link href="/admin/login" className="text-xs underline hover:text-orange-300 transition ml-2">Admin Giriş</Link>
       </div>
     </motion.footer>
   );
