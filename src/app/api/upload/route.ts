@@ -1,13 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import cloudinary from 'cloudinary';
 
-cloudinary.v2.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
-
-export const runtime = 'edge'; // Vercel uyumu için
+export const runtime = 'edge';
 
 export async function POST(req: NextRequest) {
   const formData = await req.formData();
@@ -15,20 +8,30 @@ export async function POST(req: NextRequest) {
   if (!file || !(file instanceof Blob)) {
     return NextResponse.json({ error: 'Dosya bulunamadı veya tip hatası' }, { status: 400 });
   }
-  // Dosyayı buffer'a çevir
-  const arrayBuffer = await file.arrayBuffer();
-  const buffer = Buffer.from(arrayBuffer);
 
-  try {
-    const upload = await new Promise((resolve, reject) => {
-      cloudinary.v2.uploader.upload_stream({ resource_type: 'auto' }, (err, result) => {
-        if (err) reject(err);
-        else resolve(result);
-      }).end(buffer);
-    });
-    // @ts-ignore
-    return NextResponse.json({ url: upload.secure_url });
-  } catch (e) {
-    return NextResponse.json({ error: 'Yükleme hatası', detail: e }, { status: 500 });
+  const cloudName = process.env.CLOUDINARY_CLOUD_NAME!;
+  const uploadPreset = 'enerjibobinaj';
+
+  // Dosyayı base64 olarak oku
+  const arrayBuffer = await file.arrayBuffer();
+  const base64String = Buffer.from(arrayBuffer).toString('base64');
+  const dataUrl = `data:${file.type};base64,${base64String}`;
+
+  // Cloudinary'ye fetch ile yükle
+  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+  const body = new FormData();
+  body.append('file', dataUrl);
+  body.append('upload_preset', uploadPreset);
+
+  const response = await fetch(cloudinaryUrl, {
+    method: 'POST',
+    body,
+  });
+
+  const data = await response.json();
+  if (data.secure_url) {
+    return NextResponse.json({ url: data.secure_url });
+  } else {
+    return NextResponse.json({ error: 'Yükleme hatası', detail: data }, { status: 500 });
   }
 } 
