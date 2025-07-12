@@ -4,9 +4,17 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
+type Gallery = {
+  id: number;
+  imageUrl: string;
+  title?: string;
+  description?: string;
+  [key: string]: any;
+};
+
 export default function GaleriDetay() {
   const { id } = useParams();
-  const [data, setData] = useState(null);
+  const [data, setData] = useState<Gallery | null>(null);
   useEffect(() => {
     fetch(`/api/public/gallery/${id}`).then(r => r.json()).then(setData);
   }, [id]);

@@ -4,8 +4,16 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
+type Blog = {
+  id: number;
+  title: string;
+  image: string;
+  summary?: string;
+  [key: string]: any;
+};
+
 export default function Blog() {
-  const [blogs, setBlogs] = useState([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
   useEffect(() => {
     fetch("/api/public/blog").then(r => r.json()).then(setBlogs);
   }, []);
