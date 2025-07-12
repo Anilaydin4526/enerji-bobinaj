@@ -4,23 +4,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-type Blog = {
+type Gallery = {
   id: number;
-  title: string;
-  image: string;
-  summary?: string;
+  imageUrl: string;
+  title?: string;
   [key: string]: any;
 };
 
-export default function Blog() {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
+export default function GalleryPage() {
+  const [gallery, setGallery] = useState<Gallery[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("/api/public/blog")
+    fetch("/api/public/gallery")
       .then(r => r.json())
       .then(data => {
-        setBlogs(data);
+        setGallery(data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -31,7 +30,7 @@ export default function Blog() {
       <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-blue-800">Blog yükleniyor...</p>
+          <p className="text-blue-800">Galeri yükleniyor...</p>
         </div>
       </div>
     );
@@ -48,7 +47,7 @@ export default function Blog() {
             transition={{ duration: 1 }}
             className="text-4xl sm:text-6xl font-bold text-blue-900 mb-4"
           >
-            Blog
+            Galeri
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -56,50 +55,48 @@ export default function Blog() {
             transition={{ delay: 0.3, duration: 1 }}
             className="text-xl text-blue-800 max-w-2xl mx-auto"
           >
-            Enerji Bobinaj'dan güncel haberler ve teknik bilgiler
+            Enerji Bobinaj'ın çalışmalarından örnekler
           </motion.p>
         </section>
 
-        {/* BLOG GRID */}
+        {/* GALLERY GRID */}
         <section className="py-8">
-          <div className="max-w-6xl mx-auto px-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {blogs.map((blog, index) => (
-                <Link key={blog.id} href={`/blog/${blog.id}`} className="block">
+          <div className="max-w-7xl mx-auto px-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+              {gallery.map((item, index) => (
+                <Link key={item.id} href={`/galeri/${item.id}`} className="block">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ delay: index * 0.1, duration: 0.5 }}
-                    whileHover={{ scale: 1.03, boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}
-                    className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transition-all duration-300 h-full flex flex-col"
+                    whileHover={{ scale: 1.05, boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}
+                    className="bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transition-all duration-300"
                   >
-                    <div className="relative h-48">
+                    <div className="relative aspect-square">
                       <Image
-                        src={blog.image}
-                        alt={blog.title}
+                        src={item.imageUrl}
+                        alt={item.title || "Galeri görseli"}
                         fill
                         className="object-cover"
                       />
                     </div>
-                    <div className="p-6 flex-1 flex flex-col">
-                      <h2 className="text-xl font-semibold text-blue-800 mb-3 line-clamp-2">{blog.title}</h2>
-                      {blog.summary && (
-                        <p className="text-blue-700 text-sm mb-4 flex-1 line-clamp-3">{blog.summary}</p>
-                      )}
-                      <span className="text-orange-600 font-medium mt-auto">Devamını Oku →</span>
-                    </div>
+                    {item.title && (
+                      <div className="p-4">
+                        <h3 className="text-lg font-semibold text-blue-800">{item.title}</h3>
+                      </div>
+                    )}
                   </motion.div>
                 </Link>
               ))}
             </div>
             
-            {blogs.length === 0 && (
+            {gallery.length === 0 && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-center py-16"
               >
-                <p className="text-blue-600 text-lg">Henüz blog yazısı eklenmemiş.</p>
+                <p className="text-blue-600 text-lg">Henüz galeri görseli eklenmemiş.</p>
               </motion.div>
             )}
           </div>

@@ -6,10 +6,10 @@ import { useState } from "react";
 const navLinks = [
   { name: "Anasayfa", href: "/#hero" },
   { name: "Hizmetler", href: "/#hizmetler" },
-  { name: "Galeri", href: "/#galeri" },
+  { name: "Galeri", href: "/galeri" },
+  { name: "Blog", href: "/blog" },
   { name: "Hakkımızda", href: "/#hakkimizda" },
   { name: "İletişim", href: "/#iletisim" },
-  { name: "Blog", href: "/blog" },
 ];
 
 export default function Navbar() {

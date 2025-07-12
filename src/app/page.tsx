@@ -127,8 +127,8 @@ export default function Home() {
             >
               Galeri
             </motion.h2>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {gallery.map((item) => (
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+              {gallery.slice(0, 8).map((item) => (
                 <Link key={item.id} href={`/galeri/${item.id}`} className="block">
                   <motion.div
                     whileHover={{ scale: 1.07 }}
@@ -145,6 +145,16 @@ export default function Home() {
                 </Link>
               ))}
             </div>
+            <div className="text-center">
+              <Link href="/galeri">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-blue-700 transition"
+                >
+                  Tüm Galeriyi Gör
+                </motion.button>
+              </Link>
+            </div>
           </div>
         </section>
 
@@ -160,8 +170,8 @@ export default function Home() {
             >
               Blog
             </motion.h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
-              {blogs.map((blog) => (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl mb-8">
+              {blogs.slice(0, 3).map((blog) => (
                 <Link key={blog.id} href={`/blog/${blog.id}`} className="block">
                   <motion.div
                     whileHover={{ scale: 1.04, boxShadow: "0 8px 32px #0002" }}
@@ -174,6 +184,16 @@ export default function Home() {
                   </motion.div>
                 </Link>
               ))}
+            </div>
+            <div className="text-center">
+              <Link href="/blog">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  className="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-orange-600 transition"
+                >
+                  Tüm Blog Yazıları
+                </motion.button>
+              </Link>
             </div>
           </div>
         </section>
