@@ -12,6 +12,7 @@
     "@prisma/client": "^6.11.1",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "cloudinary": "^2.7.0",
     "framer-motion": "^11.0.0",
     "jose": "^6.0.11",
     "next": "15.3.3",

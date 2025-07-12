@@ -147,13 +147,28 @@ export default function BlogManagement() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Resim URL (opsiyonel)
+                  Resim Yükle (veya URL girin)
                 </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                    const data = await res.json();
+                    if (data.url) setFormData(f => ({ ...f, image: data.url }));
+                  }}
+                  className="mb-2"
+                />
                 <input
                   type="url"
                   value={formData.image}
                   onChange={(e) => setFormData({ ...formData, image: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  placeholder="Resim URL"
                 />
               </div>
 

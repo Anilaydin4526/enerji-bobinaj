@@ -2,8 +2,15 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 export default function Home() {
+  const [gallery, setGallery] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+  useEffect(() => {
+    fetch("/api/public/gallery").then(r => r.json()).then(setGallery);
+    fetch("/api/public/blog").then(r => r.json()).then(setBlogs);
+  }, []);
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 flex flex-col overflow-x-hidden">
       <div className="pt-20 w-full">
@@ -107,19 +114,49 @@ export default function Home() {
               Galeri
             </motion.h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[1,2,3,4,5,6,7,8].map((i) => (
-                <Link key={i} href={`/galeri/${i}`} className="block">
+              {gallery.map((item) => (
+                <Link key={item.id} href={`/galeri/${item.id}`} className="block">
                   <motion.div
                     whileHover={{ scale: 1.07 }}
                     className="overflow-hidden rounded-lg shadow-md bg-white cursor-pointer"
                   >
                     <Image
-                      src={`/gallery${i}.jpg`}
-                      alt={`Galeri görseli ${i}`}
+                      src={item.imageUrl}
+                      alt={item.title}
                       width={300}
                       height={200}
                       className="object-cover w-full h-32 sm:h-40"
                     />
+                  </motion.div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* BLOG */}
+        <section id="blog" className="py-16 bg-white/80">
+          <div className="max-w-5xl mx-auto px-4">
+            <motion.h2
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.7 }}
+              className="text-3xl sm:text-4xl font-bold text-center text-blue-900 mb-12"
+            >
+              Blog
+            </motion.h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+              {blogs.map((blog) => (
+                <Link key={blog.id} href={`/blog/${blog.id}`} className="block">
+                  <motion.div
+                    whileHover={{ scale: 1.04, boxShadow: "0 8px 32px #0002" }}
+                    className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-all cursor-pointer"
+                  >
+                    <Image src={blog.image} alt={blog.title} width={240} height={140} className="rounded-lg mb-4 object-cover" />
+                    <h2 className="text-xl font-semibold text-blue-800 mb-2">{blog.title}</h2>
+                    <p className="text-blue-700 text-sm mb-2">{blog.summary}</p>
+                    <span className="text-orange-600 font-medium mt-2">Devamını Oku →</span>
                   </motion.div>
                 </Link>
               ))}
