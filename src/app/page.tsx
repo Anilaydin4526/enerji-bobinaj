@@ -172,11 +172,36 @@ export default function Home() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.7 }}
                 className="flex-1 bg-white rounded-xl shadow-lg p-6 flex flex-col gap-4"
-                onSubmit={(e: React.FormEvent) => { e.preventDefault(); alert('Mesajınız gönderildi!'); }}
+                onSubmit={async (e: React.FormEvent) => {
+                  e.preventDefault();
+                  const formData = new FormData(e.target as HTMLFormElement);
+                  const name = formData.get('name') as string;
+                  const email = formData.get('email') as string;
+                  const message = formData.get('message') as string;
+                  
+                  try {
+                    const response = await fetch('/api/contact', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({ name, email, message }),
+                    });
+                    
+                    if (response.ok) {
+                      alert('Mesajınız başarıyla gönderildi!');
+                      (e.target as HTMLFormElement).reset();
+                    } else {
+                      alert('Mesaj gönderilirken bir hata oluştu.');
+                    }
+                  } catch (error) {
+                    alert('Mesaj gönderilirken bir hata oluştu.');
+                  }
+                }}
               >
-                <input type="text" placeholder="Adınız" required className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400" />
-                <input type="email" placeholder="E-posta" required className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400" />
-                <textarea placeholder="Mesajınız" required className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400" rows={4} />
+                <input name="name" type="text" placeholder="Adınız" required className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400" />
+                <input name="email" type="email" placeholder="E-posta" required className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400" />
+                <textarea name="message" placeholder="Mesajınız" required className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-400" rows={4} />
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   type="submit"
