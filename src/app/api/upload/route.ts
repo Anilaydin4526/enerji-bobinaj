@@ -10,22 +10,15 @@ export async function POST(req: NextRequest) {
   }
 
   const cloudName = process.env.CLOUDINARY_CLOUD_NAME!;
-  const uploadPreset = 'enerjibobinaj';
+  const uploadPreset = process.env.CLOUDINARY_UPLOAD_PRESET!;
 
-  // Dosyayı base64 olarak oku
-  const arrayBuffer = await file.arrayBuffer();
-  const base64String = Buffer.from(arrayBuffer).toString('base64');
-  const dataUrl = `data:${file.type};base64,${base64String}`;
+  const uploadData = new FormData();
+  uploadData.append('file', file);
+  uploadData.append('upload_preset', uploadPreset);
 
-  // Cloudinary'ye fetch ile yükle
-  const cloudinaryUrl = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-  const body = new FormData();
-  body.append('file', dataUrl);
-  body.append('upload_preset', uploadPreset);
-
-  const response = await fetch(cloudinaryUrl, {
+  const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
     method: 'POST',
-    body,
+    body: uploadData,
   });
 
   const data = await response.json();
