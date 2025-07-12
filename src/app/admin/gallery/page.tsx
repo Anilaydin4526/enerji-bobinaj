@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import Image from 'next/image'
+import { uploadToCloudinary } from '@/lib/uploadToCloudinary';
 
 interface GalleryImage {
   id: number
@@ -155,16 +156,11 @@ export default function GalleryManagement() {
                   onChange={async (e) => {
                     const file = e.target.files?.[0];
                     if (!file) return;
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    formData.append('upload_preset', 'enerjibobinaj');
-                    const url = 'https://api.cloudinary.com/v1_1/dejdb80bv/auto/upload';
-                    const res = await fetch(url, { method: 'POST', body: formData });
-                    const data = await res.json();
-                    if (data.secure_url) {
-                      setFormData(f => ({ ...f, imageUrl: data.secure_url }));
-                    } else {
-                      alert('Yükleme hatası: ' + (data.error?.message || 'Bilinmeyen hata'));
+                    try {
+                      const url = await uploadToCloudinary(file);
+                      setFormData(f => ({ ...f, imageUrl: url }));
+                    } catch (err) {
+                      alert(err instanceof Error ? err.message : String(err));
                     }
                   }}
                   className="mb-2"
