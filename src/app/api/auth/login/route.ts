@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import { comparePassword, generateToken } from '@/lib/auth'
+import { comparePassword, generateToken, hashPassword } from '@/lib/auth'
 
 export const runtime = 'nodejs'
 
@@ -15,9 +15,18 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const admin = await prisma.admin.findUnique({
-      where: { username }
-    })
+    // Otomatik admin oluştur (sadece yoksa)
+    let admin = await prisma.admin.findUnique({ where: { username } })
+    if (!admin && username === 'admin') {
+      const hashedPassword = await hashPassword('admin123')
+      admin = await prisma.admin.create({
+        data: {
+          username: 'admin',
+          password: hashedPassword,
+          email: 'admin@enerjibobinaj.com'
+        }
+      })
+    }
 
     if (!admin) {
       return NextResponse.json(
