@@ -272,9 +272,9 @@ export default function BlogManagement() {
                     <tr key={post.id}>
                       <td colSpan={5} className="p-4 bg-gray-50">
                         <form onSubmit={e => { e.preventDefault(); handleEditSave(); }} className="flex flex-col gap-2">
-                          <input className="border rounded p-2" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} placeholder="Başlık" required />
-                          <input className="border rounded p-2" value={editForm.slug} onChange={e => setEditForm(f => ({ ...f, slug: e.target.value }))} placeholder="Slug" required />
-                          <textarea className="border rounded p-2" value={editForm.content} onChange={e => setEditForm(f => ({ ...f, content: e.target.value }))} placeholder="İçerik" required />
+                          <input className="border rounded p-2 text-black" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} placeholder="Başlık" required />
+                          <input className="border rounded p-2 text-black" value={editForm.slug} onChange={e => setEditForm(f => ({ ...f, slug: e.target.value }))} placeholder="Slug" required />
+                          <textarea className="border rounded p-2 text-black" value={editForm.content} onChange={e => setEditForm(f => ({ ...f, content: e.target.value }))} placeholder="İçerik" required />
                           <input className="border rounded p-2" value={editForm.image} onChange={e => setEditForm(f => ({ ...f, image: e.target.value }))} placeholder="Görsel URL" />
                           <input type="file" accept="image/*" onChange={async (e) => {
                             const file = e.target.files?.[0];

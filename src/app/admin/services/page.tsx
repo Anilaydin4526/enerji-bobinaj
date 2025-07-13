@@ -174,10 +174,10 @@ export default function ServicesAdmin() {
       </div>
       {showAddForm && (
         <form onSubmit={handleAdd} className="bg-white rounded-xl shadow-lg p-6 mb-8 flex flex-col gap-4 max-w-md mx-auto">
-          <input className="border rounded p-2" value={addData.title} onChange={e => setAddData({ ...addData, title: e.target.value })} placeholder="Başlık" required />
-          <textarea className="border rounded p-2" value={addData.desc} onChange={e => setAddData({ ...addData, desc: e.target.value })} placeholder="Açıklama" required />
+          <input className="border rounded p-2 text-black" value={addData.title} onChange={e => setAddData({ ...addData, title: e.target.value })} placeholder="Başlık" required />
+          <textarea className="border rounded p-2 text-black" value={addData.desc} onChange={e => setAddData({ ...addData, desc: e.target.value })} placeholder="Açıklama" required />
           <input
-            className="border rounded p-2"
+            className="border rounded p-2 text-black"
             value={addData.img}
             onChange={e => setAddData({ ...addData, img: e.target.value })}
             placeholder="Görsel URL"
@@ -209,9 +209,9 @@ export default function ServicesAdmin() {
           <div key={service.idx} className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
             {editIdx === service.idx ? (
               <form onSubmit={e => { e.preventDefault(); handleEditSave(); }} className="flex flex-col gap-2 w-full">
-                <input className="border rounded p-2" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} placeholder="Başlık" required />
-                <textarea className="border rounded p-2" value={editForm.desc} onChange={e => setEditForm(f => ({ ...f, desc: e.target.value }))} placeholder="Açıklama" required />
-                <input className="border rounded p-2" value={editForm.img} onChange={e => setEditForm(f => ({ ...f, img: e.target.value }))} placeholder="Görsel URL" required />
+                <input className="border rounded p-2 text-black" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} placeholder="Başlık" required />
+                <textarea className="border rounded p-2 text-black" value={editForm.desc} onChange={e => setEditForm(f => ({ ...f, desc: e.target.value }))} placeholder="Açıklama" required />
+                <input className="border rounded p-2 text-black" value={editForm.img} onChange={e => setEditForm(f => ({ ...f, img: e.target.value }))} placeholder="Görsel URL" required />
                 <input type="file" accept="image/*" onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;

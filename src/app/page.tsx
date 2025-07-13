@@ -45,28 +45,21 @@ export default function Home() {
   const heroButton = getSetting("hero_button", "Hizmetlerimizi Keşfedin");
 
   // HİZMETLER
-  const services = [1, 2, 3].map(i => ({
-    title: getSetting(`service_${i}_title`, [
-      "Motor Bobinajı",
-      "Jeneratör Sarımı",
-      "Trafo Bakım & Sarım"
-    ][i-1]),
-    img: getSetting(`service_${i}_img`, [
-      "/motor.jpg",
-      "/jenerator.jpg",
-      "/trafo.jpg"
-    ][i-1]),
-    desc: getSetting(`service_${i}_desc`, [
-      "Her tip elektrik motoru için profesyonel bobinaj hizmeti.",
-      "Jeneratörler için kaliteli ve garantili sarım işlemleri.",
-      "Trafo sarımı ve bakımı, uzman ekibimizle."
-    ][i-1]),
-    slug: [
-      "motor-bobinaji",
-      "jenerator-sarimi",
-      "trafo-bakim-sarim"
-    ][i-1]
-  }));
+  // Tüm dinamik hizmetleri bul
+  const serviceKeys = settings.filter(s => s.key.startsWith('service_') && s.key.match(/^service_\d+_title$/));
+  const services = serviceKeys.map(s => {
+    const idx = parseInt(s.key.split('_')[1]);
+    return {
+      title: s.value,
+      img: getSetting(`service_${idx}_img`, "/motor.jpg"),
+      desc: getSetting(`service_${idx}_desc`, ""),
+      slug: `service-${idx}`,
+      idx
+    };
+  })
+  // Silinen (başlığı boş) hizmetleri gösterme
+  .filter(s => s.title && s.title.trim() !== "")
+  .sort((a, b) => a.idx - b.idx);
 
   // GALERİ
   const galleryTitle = getSetting("gallery_title", "Galeri");
@@ -135,7 +128,7 @@ export default function Home() {
             </motion.h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
               {services.map((item, i) => (
-                <Link key={item.title} href={`/hizmetler/${item.slug}`} className="block">
+                <Link key={item.idx} href={`/hizmetler/${item.slug}`} className="block">
                   <motion.div
                     whileHover={{ scale: 1.05, boxShadow: "0 8px 32px #0002" }}
                     className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center transition-all cursor-pointer"
