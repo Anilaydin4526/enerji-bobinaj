@@ -93,7 +93,7 @@ export default function AdminPreview() {
           {/* Hero görseli */}
           {editKey === "hero_img" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} placeholder="Görsel URL" />
+              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} placeholder="Görsel URL" />
               <input type="file" accept="image/*" onChange={e => {
                 const file = e.target.files?.[0];
                 if (file) handleFileUpload("hero_img", file);
@@ -103,46 +103,46 @@ export default function AdminPreview() {
             </div>
           ) : (
             <div className="relative mb-4 w-full flex items-center justify-center">
-              <img src={heroImg} alt="Hero" className="rounded-lg object-cover w-full max-w-2xl h-40" />
+              <img src={heroImg} alt="Hero" className="rounded-lg object-cover w-full max-w-2xl h-40 border-2 border-black" />
               <button onClick={() => handleEdit("hero_img", heroImg)} className="absolute top-2 right-2 text-blue-600 hover:underline bg-white rounded-full px-2 py-1 text-xs">Düzenle</button>
             </div>
           )}
           {/* Başlık */}
           {editKey === "hero_title" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
           ) : (
             <div className="flex items-center w-full justify-between">
-              <span className="text-4xl font-bold text-blue-900">{heroTitle}</span>
+              <span className="text-4xl font-extrabold text-black drop-shadow-lg">{heroTitle}</span>
               <button onClick={() => handleEdit("hero_title", heroTitle)} className="ml-4 text-blue-600 hover:underline">Düzenle</button>
             </div>
           )}
           {/* Alt başlık */}
           {editKey === "hero_subtitle" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
           ) : (
             <div className="flex items-center w-full justify-between">
-              <span className="text-xl text-blue-800">{heroSubtitle}</span>
+              <span className="text-xl font-bold text-black drop-shadow">{heroSubtitle}</span>
               <button onClick={() => handleEdit("hero_subtitle", heroSubtitle)} className="ml-4 text-blue-600 hover:underline">Düzenle</button>
             </div>
           )}
           {/* Buton metni */}
           {editKey === "hero_button" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
           ) : (
             <div className="flex items-center w-full justify-between">
-              <span className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg">{heroButton}</span>
+              <span className="inline-block bg-orange-500 text-black font-extrabold px-8 py-3 rounded-full shadow-lg border-2 border-black">{heroButton}</span>
               <button onClick={() => handleEdit("hero_button", heroButton)} className="ml-4 text-blue-600 hover:underline">Düzenle</button>
             </div>
           )}
