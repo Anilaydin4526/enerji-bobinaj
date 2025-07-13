@@ -25,7 +25,7 @@ export default function GalleryManagement() {
     order: 0
   })
   const [editId, setEditId] = useState<number|null>(null);
-  const [editData, setEditData] = useState<any>({});
+  const [editForm, setEditForm] = useState({ title: '', description: '', imageUrl: '', order: 0 });
 
   useEffect(() => {
     fetchGalleryImages()
@@ -82,23 +82,26 @@ export default function GalleryManagement() {
     }
   }
 
-  const handleEdit = (img: any) => {
+  const handleEditOpen = (img: any) => {
     setEditId(img.id);
-    setEditData({ ...img });
+    setEditForm({ title: img.title, description: img.description || '', imageUrl: img.imageUrl, order: img.order });
   };
-  const handleCancel = () => {
-    setEditId(null);
-    setEditData({});
-  };
-  const handleSave = async (id: number) => {
-    await fetch(`/api/admin/gallery/${id}`, {
+  const handleEditSave = async () => {
+    if (editId == null) return;
+    setLoading(true);
+    await fetch(`/api/admin/gallery/${editId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(editData),
+      body: JSON.stringify(editForm),
     });
     setEditId(null);
-    setEditData({});
+    setEditForm({ title: '', description: '', imageUrl: '', order: 0 });
+    setLoading(false);
     fetchGalleryImages();
+  };
+  const handleEditCancel = () => {
+    setEditId(null);
+    setEditForm({ title: '', description: '', imageUrl: '', order: 0 });
   };
 
   if (loading) {
@@ -244,23 +247,36 @@ export default function GalleryManagement() {
                 />
               </div>
               {editId === image.id ? (
-                <>
-                  <input value={editData.title} onChange={e => setEditData({ ...editData, title: e.target.value })} className="border rounded p-1 w-full mb-2" />
-                  <textarea value={editData.description || ''} onChange={e => setEditData({ ...editData, description: e.target.value })} className="border rounded p-1 w-full mb-2" />
-                  <input value={editData.imageUrl} onChange={e => setEditData({ ...editData, imageUrl: e.target.value })} className="border rounded p-1 w-full mb-2" />
-                  <input type="number" value={editData.order} onChange={e => setEditData({ ...editData, order: parseInt(e.target.value) || 0 })} className="border rounded p-1 w-full mb-2" />
-                  <button onClick={() => handleSave(image.id)} className="text-green-600 mr-2">Kaydet</button>
-                  <button onClick={handleCancel} className="text-gray-600">İptal</button>
-                </>
+                <form onSubmit={e => { e.preventDefault(); handleEditSave(); }} className="flex flex-col gap-2 w-full">
+                  <input className="border rounded p-2" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} placeholder="Başlık" required />
+                  <textarea className="border rounded p-2" value={editForm.description} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))} placeholder="Açıklama" />
+                  <input className="border rounded p-2" value={editForm.imageUrl} onChange={e => setEditForm(f => ({ ...f, imageUrl: e.target.value }))} placeholder="Görsel URL" required />
+                  <input type="file" accept="image/*" onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setLoading(true);
+                    try {
+                      const url = await uploadToCloudinary(file);
+                      setEditForm(f => ({ ...f, imageUrl: url }));
+                    } catch (err) {
+                      alert(err instanceof Error ? err.message : String(err));
+                    }
+                    setLoading(false);
+                  }} className="mb-2" />
+                  <input type="number" className="border rounded p-2" value={editForm.order} onChange={e => setEditForm(f => ({ ...f, order: parseInt(e.target.value) || 0 }))} placeholder="Sıra" />
+                  <div className="flex gap-2">
+                    <button type="submit" disabled={loading} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
+                    <button type="button" onClick={handleEditCancel} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
+                  </div>
+                </form>
               ) : (
                 <>
                   <h3 className="text-lg font-semibold text-gray-900 mb-2">{image.title}</h3>
                   {image.description && (
                     <p className="text-gray-600 text-sm mb-3">{image.description}</p>
                   )}
-                  <div className="flex justify-between items-center">
-                    <span className="text-xs text-gray-500">Sıra: {image.order}</span>
-                    <button onClick={() => handleEdit(image)} className="text-blue-600 mr-2">Düzenle</button>
+                  <div className="flex justify-between items-center mt-2">
+                    <button onClick={() => handleEditOpen(image)} className="text-blue-600 mr-2">Düzenle</button>
                     <button onClick={() => handleDelete(image.id)} className="text-red-600">Sil</button>
                   </div>
                 </>

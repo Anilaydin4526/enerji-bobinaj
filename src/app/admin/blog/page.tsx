@@ -24,7 +24,7 @@ export default function BlogManagement() {
     published: false
   })
   const [editId, setEditId] = useState<number|null>(null);
-  const [editData, setEditData] = useState<any>({});
+  const [editForm, setEditForm] = useState({ title: '', slug: '', content: '', image: '', published: false });
 
   useEffect(() => {
     fetchBlogPosts()
@@ -81,23 +81,24 @@ export default function BlogManagement() {
     }
   }
 
-  const handleEdit = (post: any) => {
+  const handleEditOpen = (post: any) => {
     setEditId(post.id);
-    setEditData({ ...post });
+    setEditForm({ title: post.title, slug: post.slug, content: post.content || '', image: post.image || '', published: post.published });
   };
-  const handleCancel = () => {
-    setEditId(null);
-    setEditData({});
-  };
-  const handleSave = async (id: number) => {
-    await fetch(`/api/admin/blog/${id}`, {
+  const handleEditSave = async () => {
+    if (editId == null) return;
+    await fetch(`/api/admin/blog/${editId}`, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(editData),
+      body: JSON.stringify(editForm),
     });
     setEditId(null);
-    setEditData({});
+    setEditForm({ title: '', slug: '', content: '', image: '', published: false });
     fetchBlogPosts();
+  };
+  const handleEditCancel = () => {
+    setEditId(null);
+    setEditForm({ title: '', slug: '', content: '', image: '', published: false });
   };
 
   if (loading) {
@@ -267,25 +268,43 @@ export default function BlogManagement() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {blogPosts.map((post) => (
-                  <tr key={post.id}>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {editId === post.id ? (
-                        <input value={editData.title} onChange={e => setEditData({ ...editData, title: e.target.value })} className="border rounded p-1 w-full" />
-                      ) : (
+                  editId === post.id ? (
+                    <tr key={post.id}>
+                      <td colSpan={5} className="p-4 bg-gray-50">
+                        <form onSubmit={e => { e.preventDefault(); handleEditSave(); }} className="flex flex-col gap-2">
+                          <input className="border rounded p-2" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} placeholder="Başlık" required />
+                          <input className="border rounded p-2" value={editForm.slug} onChange={e => setEditForm(f => ({ ...f, slug: e.target.value }))} placeholder="Slug" required />
+                          <textarea className="border rounded p-2" value={editForm.content} onChange={e => setEditForm(f => ({ ...f, content: e.target.value }))} placeholder="İçerik" required />
+                          <input className="border rounded p-2" value={editForm.image} onChange={e => setEditForm(f => ({ ...f, image: e.target.value }))} placeholder="Görsel URL" />
+                          <input type="file" accept="image/*" onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            try {
+                              const url = await uploadToCloudinary(file);
+                              setEditForm(f => ({ ...f, image: url }));
+                            } catch (err) {
+                              alert(err instanceof Error ? err.message : String(err));
+                            }
+                          }} className="mb-2" />
+                          <label className="flex items-center gap-2">
+                            <input type="checkbox" checked={editForm.published} onChange={e => setEditForm(f => ({ ...f, published: e.target.checked }))} /> Yayında
+                          </label>
+                          <div className="flex gap-2">
+                            <button type="submit" className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
+                            <button type="button" onClick={handleEditCancel} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
+                          </div>
+                        </form>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr key={post.id}>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{post.title}</div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {editId === post.id ? (
-                        <input value={editData.slug} onChange={e => setEditData({ ...editData, slug: e.target.value })} className="border rounded p-1 w-full" />
-                      ) : (
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-500">{post.slug}</div>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {editId === post.id ? (
-                        <input type="checkbox" checked={editData.published} onChange={e => setEditData({ ...editData, published: e.target.checked })} />
-                      ) : (
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
                           post.published
                             ? 'bg-green-100 text-green-800'
@@ -293,27 +312,16 @@ export default function BlogManagement() {
                         }`}>
                           {post.published ? 'Yayında' : 'Taslak'}
                         </span>
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {editId === post.id ? (
-                        <input value={editData.createdAt} onChange={e => setEditData({ ...editData, createdAt: e.target.value })} className="border rounded p-1 w-full" />
-                      ) : (
-                        new Date(post.createdAt).toLocaleDateString('tr-TR')
-                      )}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      {editId === post.id ? (
-                        <>
-                          <button onClick={() => handleSave(post.id)} className="text-green-600 mr-2">Kaydet</button>
-                          <button onClick={handleCancel} className="text-gray-600">İptal</button>
-                        </>
-                      ) : (
-                        <button onClick={() => handleEdit(post)} className="text-blue-600 mr-2">Düzenle</button>
-                      )}
-                      <button onClick={() => handleDelete(post.id)} className="text-red-600">Sil</button>
-                    </td>
-                  </tr>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                        {new Date(post.createdAt).toLocaleDateString('tr-TR')}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <button onClick={() => handleEditOpen(post)} className="text-blue-600 mr-2">Düzenle</button>
+                        <button onClick={() => handleDelete(post.id)} className="text-red-600">Sil</button>
+                      </td>
+                    </tr>
+                  )
                 ))}
               </tbody>
             </table>
