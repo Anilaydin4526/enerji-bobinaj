@@ -45,11 +45,17 @@ model GalleryImage {
 
 model SiteSettings {
   id          Int      @id @default(autoincrement())
-  key         String   @unique
-  value       String
-  description String?
+  key         String   @unique // Örnek: 'hero_title', 'hero_subtitle', 'about_text', 'contact_phone', 'service_1_title', 'service_1_desc', 'service_1_img', ...
+  value       String   // Metin veya görsel URL'si
+  description String?  // Açıklama (isteğe bağlı)
   updatedAt   DateTime @updatedAt
 }
+
+// Açıklama:
+// - Tüm ana sayfa, hakkımızda, iletişim, hizmetler, hero başlıkları, vs. için anahtar-değer olarak içerik saklanır.
+// - key: 'hero_title', 'about_text', 'contact_phone', 'service_1_title', 'service_1_img', ...
+// - value: Metin veya görsel URL'si
+// - description: Panelde gösterilecek açıklama (isteğe bağlı)
 
 model ContactMessage {
   id        Int      @id @default(autoincrement())
