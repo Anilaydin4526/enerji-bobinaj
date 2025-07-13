@@ -93,7 +93,7 @@ export default function AdminPreview() {
           {/* Hero görseli */}
           {editKey === "hero_img" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} placeholder="Görsel URL" />
+              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} placeholder="Görsel URL" />
               <input type="file" accept="image/*" onChange={e => {
                 const file = e.target.files?.[0];
                 if (file) handleFileUpload("hero_img", file);
@@ -110,7 +110,7 @@ export default function AdminPreview() {
           {/* Başlık */}
           {editKey === "hero_title" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
@@ -123,7 +123,7 @@ export default function AdminPreview() {
           {/* Alt başlık */}
           {editKey === "hero_subtitle" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
@@ -136,7 +136,7 @@ export default function AdminPreview() {
           {/* Buton metni */}
           {editKey === "hero_button" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border-2 border-black bg-white placeholder-gray-600 rounded-md p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
@@ -157,7 +157,7 @@ export default function AdminPreview() {
               {/* Görsel */}
               {editKey === `service_${service.idx}_img` ? (
                 <div className="flex gap-2 items-center w-full mb-2">
-                  <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} placeholder="Görsel URL" />
+                  <input className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} placeholder="Görsel URL" />
                   <input type="file" accept="image/*" onChange={e => {
                     const file = e.target.files?.[0];
                     if (file) handleFileUpload(`service_${service.idx}_img`, file);
@@ -178,7 +178,7 @@ export default function AdminPreview() {
               {/* Başlık */}
               {editKey === `service_${service.idx}_title` ? (
                 <div className="flex gap-2 items-center w-full mb-2">
-                  <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+                  <input className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
                   <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
                   <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
                 </div>
@@ -191,7 +191,7 @@ export default function AdminPreview() {
               {/* Açıklama */}
               {editKey === `service_${service.idx}_desc` ? (
                 <div className="flex gap-2 items-center w-full">
-                  <textarea className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} rows={2} />
+                  <textarea className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} rows={2} />
                   <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
                   <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
                 </div>
@@ -212,7 +212,7 @@ export default function AdminPreview() {
           {/* Başlık */}
           {editKey === "gallery_title" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
@@ -225,7 +225,7 @@ export default function AdminPreview() {
           {/* Açıklama */}
           {editKey === "gallery_desc" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
@@ -244,7 +244,7 @@ export default function AdminPreview() {
           {/* Başlık */}
           {editKey === "blog_title" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
@@ -257,7 +257,7 @@ export default function AdminPreview() {
           {/* Açıklama */}
           {editKey === "blog_desc" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
@@ -275,7 +275,7 @@ export default function AdminPreview() {
         <div className="bg-white rounded shadow p-6 flex flex-col gap-4 items-center">
           {editKey === "about_text" ? (
             <div className="flex gap-2 items-center w-full">
-              <textarea className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} rows={4} />
+              <textarea className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} rows={4} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
@@ -294,7 +294,7 @@ export default function AdminPreview() {
           {/* Telefon */}
           {editKey === "contact_phone" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
@@ -308,7 +308,7 @@ export default function AdminPreview() {
           {/* E-posta */}
           {editKey === "contact_email" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
@@ -322,7 +322,7 @@ export default function AdminPreview() {
           {/* Adres */}
           {editKey === "contact_address" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
@@ -342,7 +342,7 @@ export default function AdminPreview() {
           {/* Footer görseli */}
           {editKey === "footer_img" ? (
             <div className="flex gap-2 items-center w-full mb-2">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} placeholder="Görsel URL" />
+              <input className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} placeholder="Görsel URL" />
               <input type="file" accept="image/*" onChange={e => {
                 const file = e.target.files?.[0];
                 if (file) handleFileUpload("footer_img", file);
@@ -363,7 +363,7 @@ export default function AdminPreview() {
           {/* Footer metni */}
           {editKey === "footer_text" ? (
             <div className="flex gap-2 items-center w-full">
-              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <input className="border rounded p-2 w-full text-black" value={editValue} onChange={e => setEditValue(e.target.value)} />
               <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
               <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
             </div>
