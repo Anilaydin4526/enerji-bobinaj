@@ -89,8 +89,8 @@ export default function Blog() {
                       <span className="text-orange-600 font-medium mt-auto">Devamını Oku →</span>
                     </div>
                   </motion.div>
-                </Link>
-              ))}
+          </Link>
+        ))}
             </div>
             
             {blogs.length === 0 && (
