@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
 
 type Blog = {
   id: number;
@@ -45,6 +47,19 @@ export default function Home() {
   const heroSubtitle = getSetting("hero_subtitle", "Elektrik Motorları, Jeneratörler ve Trafo Sarımında Uzmanlık");
   const heroButton = getSetting("hero_button", "Hizmetlerimizi Keşfedin");
 
+  // SLIDER
+  const sliderKeys = settings.filter(s => s.key.startsWith('slider_') && s.key.match(/^slider_\d+_title$/));
+  const sliders = sliderKeys.map(s => {
+    const idx = parseInt(s.key.split('_')[1]);
+    return {
+      title: s.value,
+      desc: getSetting(`slider_${idx}_desc`, ""),
+      img: getSetting(`slider_${idx}_img`, heroImg),
+      button: getSetting(`slider_${idx}_button`, "Detaylı Bilgi"),
+      idx
+    };
+  }).filter(s => s.title && s.title.trim() !== "").sort((a, b) => a.idx - b.idx);
+
   // HİZMETLER
   // Tüm dinamik hizmetleri bul
   const serviceKeys = settings.filter(s => s.key.startsWith('service_') && s.key.match(/^service_\d+_title$/));
@@ -85,35 +100,57 @@ export default function Home() {
       <div className="pt-20 w-full">
         {/* HERO SECTION */}
         <section id="hero" className="relative flex-1 flex flex-col items-center justify-center text-center min-h-screen w-full py-16 sm:py-32 overflow-hidden">
-          <Image
-            src={heroImg}
-            alt="Enerji Bobinaj Hero"
-            fill
-            className="object-cover object-center absolute inset-0 opacity-40 -z-10 w-full h-full"
-          />
-          <motion.h1
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4"
-          >
-            {heroTitle}
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 1 }}
-            className="text-xl sm:text-2xl text-blue-800 mb-8"
-          >
-            {heroSubtitle}
-          </motion.p>
-          <motion.a
-            href="#hizmetler"
-            whileHover={{ scale: 1.08 }}
-            className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition"
-          >
-            {heroButton}
-          </motion.a>
+          {sliders.length > 0 ? (
+            <Swiper loop autoplay={{ delay: 5000, disableOnInteraction: false }} className="w-full h-full">
+              {sliders.map((slide, i) => (
+                <SwiperSlide key={slide.idx}>
+                  <div className="relative flex flex-col items-center justify-center text-center min-h-[60vh] w-full py-12">
+                    <Image
+                      src={slide.img}
+                      alt={slide.title}
+                      fill
+                      className="object-cover object-center absolute inset-0 opacity-40 -z-10 w-full h-full"
+                    />
+                    <h1 className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4">{slide.title}</h1>
+                    <p className="text-xl sm:text-2xl text-blue-800 mb-8">{slide.desc}</p>
+                    {slide.button && <a href="#hizmetler" className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition">{slide.button}</a>}
+                  </div>
+                </SwiperSlide>
+              ))}
+            </Swiper>
+          ) : (
+            <>
+              <Image
+                src={heroImg}
+                alt="Enerji Bobinaj Hero"
+                fill
+                className="object-cover object-center absolute inset-0 opacity-40 -z-10 w-full h-full"
+              />
+              <motion.h1
+                initial={{ opacity: 0, y: 40 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 1 }}
+                className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4"
+              >
+                {heroTitle}
+              </motion.h1>
+              <motion.p
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.5, duration: 1 }}
+                className="text-xl sm:text-2xl text-blue-800 mb-8"
+              >
+                {heroSubtitle}
+              </motion.p>
+              <motion.a
+                href="#hizmetler"
+                whileHover={{ scale: 1.08 }}
+                className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition"
+              >
+                {heroButton}
+              </motion.a>
+            </>
+          )}
         </section>
         {/* HİZMETLER */}
         <section id="hizmetler" className="py-16 bg-white/80">

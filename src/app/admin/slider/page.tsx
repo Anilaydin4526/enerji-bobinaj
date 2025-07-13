@@ -97,8 +97,9 @@ export default function SliderAdmin() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 p-8">
       <h1 className="text-3xl font-bold text-blue-900 mb-8">Slider Yönetimi</h1>
-      <div className="flex justify-end mb-6">
-        <button onClick={() => setShowAddForm(f => !f)} className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-orange-700 transition">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-semibold text-blue-800">Birden fazla slider ekleyin, ana sayfada otomatik kayacak!</h2>
+        <button onClick={() => setShowAddForm(f => !f)} className="bg-orange-600 text-white px-8 py-3 rounded-lg font-bold text-lg shadow hover:bg-orange-700 transition">
           + Slider Ekle
         </button>
       </div>
