@@ -9,9 +9,9 @@ export default function ServicesAdmin() {
   const [editValue, setEditValue] = useState<string>("");
   const [saving, setSaving] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [addData, setAddData] = useState({ title: '', desc: '', img: '' });
+  const [addData, setAddData] = useState({ title: '', desc: '', img: '', detail: '' });
   const [editIdx, setEditIdx] = useState<number|null>(null);
-  const [editForm, setEditForm] = useState({ title: '', desc: '', img: '' });
+  const [editForm, setEditForm] = useState({ title: '', desc: '', img: '', detail: '' });
 
   useEffect(() => {
     fetchSettings();
@@ -84,17 +84,22 @@ export default function ServicesAdmin() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: `service_${newIdx}_img`, value: addData.img }),
+      }),
+      fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: `service_${newIdx}_detail`, value: addData.detail }),
       })
     ]);
     setShowAddForm(false);
-    setAddData({ title: '', desc: '', img: '' });
+    setAddData({ title: '', desc: '', img: '', detail: '' });
     setSaving(false);
     fetchSettings();
   };
 
   const handleEditOpen = (service: any) => {
     setEditIdx(service.idx);
-    setEditForm({ title: service.title, desc: service.desc, img: service.img });
+    setEditForm({ title: service.title, desc: service.desc, img: service.img, detail: service.detail });
   };
   const handleEditSave = async () => {
     if (editIdx == null) return;
@@ -114,16 +119,21 @@ export default function ServicesAdmin() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ key: `service_${editIdx}_img`, value: editForm.img }),
+      }),
+      fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: `service_${editIdx}_detail`, value: editForm.detail }),
       })
     ]);
     setEditIdx(null);
-    setEditForm({ title: '', desc: '', img: '' });
+    setEditForm({ title: '', desc: '', img: '', detail: '' });
     setSaving(false);
     fetchSettings();
   };
   const handleEditCancel = () => {
     setEditIdx(null);
-    setEditForm({ title: '', desc: '', img: '' });
+    setEditForm({ title: '', desc: '', img: '', detail: '' });
   };
   const handleDelete = async (idx: number) => {
     if (!confirm('Bu hizmeti silmek istediğinizden emin misiniz?')) return;
@@ -160,6 +170,7 @@ export default function ServicesAdmin() {
       title: s.value,
       desc: getSetting(`service_${idx}_desc`, ""),
       img: getSetting(`service_${idx}_img`, ""),
+      detail: getSetting(`service_${idx}_detail`, ""),
       idx
     };
   }).sort((a, b) => a.idx - b.idx);
@@ -176,6 +187,7 @@ export default function ServicesAdmin() {
         <form onSubmit={handleAdd} className="bg-white rounded-xl shadow-lg p-6 mb-8 flex flex-col gap-4 max-w-md mx-auto">
           <input className="border rounded p-2 text-black" value={addData.title} onChange={e => setAddData({ ...addData, title: e.target.value })} placeholder="Başlık" required />
           <textarea className="border rounded p-2 text-black" value={addData.desc} onChange={e => setAddData({ ...addData, desc: e.target.value })} placeholder="Açıklama" required />
+          <textarea className="border rounded p-2 text-black" value={addData.detail} onChange={e => setAddData({ ...addData, detail: e.target.value })} placeholder="Detaylı Açıklama" />
           <input
             className="border rounded p-2 text-black"
             value={addData.img}
@@ -211,6 +223,7 @@ export default function ServicesAdmin() {
               <form onSubmit={e => { e.preventDefault(); handleEditSave(); }} className="flex flex-col gap-2 w-full">
                 <input className="border rounded p-2 text-black" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} placeholder="Başlık" required />
                 <textarea className="border rounded p-2 text-black" value={editForm.desc} onChange={e => setEditForm(f => ({ ...f, desc: e.target.value }))} placeholder="Açıklama" required />
+                <textarea className="border rounded p-2 text-black" value={editForm.detail} onChange={e => setEditForm(f => ({ ...f, detail: e.target.value }))} placeholder="Detaylı Açıklama" />
                 <input className="border rounded p-2 text-black" value={editForm.img} onChange={e => setEditForm(f => ({ ...f, img: e.target.value }))} placeholder="Görsel URL" required />
                 <input type="file" accept="image/*" onChange={async (e) => {
                   const file = e.target.files?.[0];
