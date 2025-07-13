@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://enerji-bobinaj.vercel.app/sitemap.xml 
