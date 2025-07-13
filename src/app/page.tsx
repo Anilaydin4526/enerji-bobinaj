@@ -15,6 +15,7 @@ type Gallery = {
   id: number;
   imageUrl: string;
   title?: string;
+  description?: string;
   [key: string]: any;
 };
 
@@ -165,7 +166,7 @@ export default function Home() {
                 <Link key={item.id} href={`/galeri/${item.id}`} className="block">
                   <motion.div
                     whileHover={{ scale: 1.07 }}
-                    className="overflow-hidden rounded-lg shadow-md bg-white cursor-pointer"
+                    className="overflow-hidden rounded-lg shadow-md bg-white cursor-pointer flex flex-col items-center"
                   >
                     <Image
                       src={item.imageUrl}
@@ -174,6 +175,12 @@ export default function Home() {
                       height={200}
                       className="object-cover w-full h-32 sm:h-40"
                     />
+                    {(item.title || item.description) && (
+                      <div className="p-2 w-full text-center">
+                        <div className="text-blue-900 font-semibold text-base truncate">{item.title}</div>
+                        {item.description && <div className="text-blue-700 text-sm mt-1 truncate">{item.description}</div>}
+                      </div>
+                    )}
                   </motion.div>
                 </Link>
               ))}
