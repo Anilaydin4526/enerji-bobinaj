@@ -327,15 +327,15 @@ export default function Home() {
               >
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-blue-800">Telefon:</span>
-                  <span>{contactPhone}</span>
+                  <span className="text-black">{contactPhone}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-blue-800">E-posta:</span>
-                  <span>{contactEmail}</span>
+                  <span className="text-black">{contactEmail}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-blue-800">Adres:</span>
-                  <span>{contactAddress}</span>
+                  <span className="text-black">{contactAddress}</span>
                 </div>
               </motion.div>
             </div>

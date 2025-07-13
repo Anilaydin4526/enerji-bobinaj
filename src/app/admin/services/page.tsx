@@ -94,12 +94,16 @@ export default function ServicesAdmin() {
 
   const getSetting = (key: string, fallback: string = "") => settings.find(s => s.key === key)?.value || fallback;
 
-  const services = [1, 2, 3].map(i => ({
-    title: getSetting(`service_${i}_title`, `Hizmet ${i}`),
-    desc: getSetting(`service_${i}_desc`, ""),
-    img: getSetting(`service_${i}_img`, ""),
-    idx: i
-  }));
+  const serviceKeys = settings.filter(s => s.key.startsWith('service_') && s.key.match(/^service_\d+_title$/));
+  const services = serviceKeys.map(s => {
+    const idx = parseInt(s.key.split('_')[1]);
+    return {
+      title: s.value,
+      desc: getSetting(`service_${idx}_desc`, ""),
+      img: getSetting(`service_${idx}_img`, ""),
+      idx
+    };
+  }).sort((a, b) => a.idx - b.idx);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 p-8">
@@ -113,7 +117,30 @@ export default function ServicesAdmin() {
         <form onSubmit={handleAdd} className="bg-white rounded-xl shadow-lg p-6 mb-8 flex flex-col gap-4 max-w-md mx-auto">
           <input className="border rounded p-2" value={addData.title} onChange={e => setAddData({ ...addData, title: e.target.value })} placeholder="Başlık" required />
           <textarea className="border rounded p-2" value={addData.desc} onChange={e => setAddData({ ...addData, desc: e.target.value })} placeholder="Açıklama" required />
-          <input className="border rounded p-2" value={addData.img} onChange={e => setAddData({ ...addData, img: e.target.value })} placeholder="Görsel URL" required />
+          <input
+            className="border rounded p-2"
+            value={addData.img}
+            onChange={e => setAddData({ ...addData, img: e.target.value })}
+            placeholder="Görsel URL"
+            required
+          />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              setSaving(true);
+              try {
+                const url = await uploadToCloudinary(file);
+                setAddData(f => ({ ...f, img: url }));
+              } catch (err) {
+                alert(err instanceof Error ? err.message : String(err));
+              }
+              setSaving(false);
+            }}
+            className="mb-2"
+          />
           <button type="submit" disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
           <button type="button" onClick={() => setShowAddForm(false)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
         </form>
