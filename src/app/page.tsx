@@ -21,17 +21,78 @@ type Gallery = {
 export default function Home() {
   const [gallery, setGallery] = useState<Gallery[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [settings, setSettings] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     fetch("/api/public/gallery").then(r => r.json()).then(setGallery);
     fetch("/api/public/blog").then(r => r.json()).then(setBlogs);
+    fetch("/api/public/settings").then(r => r.json()).then(data => {
+      setSettings(data);
+      setLoading(false);
+    });
   }, []);
+
+  if (loading) return <div className="p-10 text-center">Yükleniyor...</div>;
+
+  // Helper to get setting by key
+  const getSetting = (key: string, fallback: string = "") => settings.find(s => s.key === key)?.value || fallback;
+
+  // HERO
+  const heroImg = getSetting("hero_img", "/hero-bobinaj.jpg");
+  const heroTitle = getSetting("hero_title", "Enerji Bobinaj");
+  const heroSubtitle = getSetting("hero_subtitle", "Elektrik Motorları, Jeneratörler ve Trafo Sarımında Uzmanlık");
+  const heroButton = getSetting("hero_button", "Hizmetlerimizi Keşfedin");
+
+  // HİZMETLER
+  const services = [1, 2, 3].map(i => ({
+    title: getSetting(`service_${i}_title`, [
+      "Motor Bobinajı",
+      "Jeneratör Sarımı",
+      "Trafo Bakım & Sarım"
+    ][i-1]),
+    img: getSetting(`service_${i}_img`, [
+      "/motor.jpg",
+      "/jenerator.jpg",
+      "/trafo.jpg"
+    ][i-1]),
+    desc: getSetting(`service_${i}_desc`, [
+      "Her tip elektrik motoru için profesyonel bobinaj hizmeti.",
+      "Jeneratörler için kaliteli ve garantili sarım işlemleri.",
+      "Trafo sarımı ve bakımı, uzman ekibimizle."
+    ][i-1]),
+    slug: [
+      "motor-bobinaji",
+      "jenerator-sarimi",
+      "trafo-bakim-sarim"
+    ][i-1]
+  }));
+
+  // GALERİ
+  const galleryTitle = getSetting("gallery_title", "Galeri");
+  const galleryButton = getSetting("gallery_button", "Tüm Galeriyi Gör");
+
+  // BLOG
+  const blogTitle = getSetting("blog_title", "Blog");
+  const blogButton = getSetting("blog_button", "Tüm Blog Yazıları");
+
+  // HAKKIMIZDA
+  const aboutTitle = getSetting("about_title", "Hakkımızda");
+  const aboutText = getSetting("about_text", "Enerji Bobinaj olarak, yılların verdiği tecrübe ve uzman kadromuzla elektrik motorları, jeneratörler ve trafolar için bobinaj, bakım ve sarım hizmetleri sunuyoruz. Müşteri memnuniyetini ve kaliteyi ön planda tutarak, sektörde güvenilir bir çözüm ortağı olmayı hedefliyoruz.");
+
+  // İLETİŞİM
+  const contactTitle = getSetting("contact_title", "İletişim");
+  const contactPhone = getSetting("contact_phone", "+90 555 123 45 67");
+  const contactEmail = getSetting("contact_email", "info@enerjibobinaj.com");
+  const contactAddress = getSetting("contact_address", "İstanbul, Türkiye");
+
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 flex flex-col overflow-x-hidden">
       <div className="pt-20 w-full">
         {/* HERO SECTION */}
         <section id="hero" className="relative flex-1 flex flex-col items-center justify-center text-center min-h-screen w-full py-16 sm:py-32 overflow-hidden">
           <Image
-            src="/hero-bobinaj.jpg"
+            src={heroImg}
             alt="Enerji Bobinaj Hero"
             fill
             className="object-cover object-center absolute inset-0 opacity-40 -z-10 w-full h-full"
@@ -42,7 +103,7 @@ export default function Home() {
             transition={{ duration: 1 }}
             className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4"
           >
-            Enerji Bobinaj
+            {heroTitle}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, y: 20 }}
@@ -50,17 +111,16 @@ export default function Home() {
             transition={{ delay: 0.5, duration: 1 }}
             className="text-xl sm:text-2xl text-blue-800 mb-8"
           >
-            Elektrik Motorları, Jeneratörler ve Trafo Sarımında Uzmanlık
+            {heroSubtitle}
           </motion.p>
           <motion.a
             href="#hizmetler"
             whileHover={{ scale: 1.08 }}
             className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition"
           >
-            Hizmetlerimizi Keşfedin
+            {heroButton}
           </motion.a>
         </section>
-
         {/* HİZMETLER */}
         <section id="hizmetler" className="py-16 bg-white/80">
           <div className="max-w-5xl mx-auto px-4">
@@ -71,29 +131,10 @@ export default function Home() {
               transition={{ duration: 0.7 }}
               className="text-3xl sm:text-4xl font-bold text-center text-blue-900 mb-12"
             >
-              Hizmetlerimiz
+              {getSetting("services_title", "Hizmetlerimiz")}
             </motion.h2>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
-              {[
-                {
-                  title: "Motor Bobinajı",
-                  img: "/motor.jpg",
-                  desc: "Her tip elektrik motoru için profesyonel bobinaj hizmeti.",
-                  slug: "motor-bobinaji"
-                },
-                {
-                  title: "Jeneratör Sarımı",
-                  img: "/jenerator.jpg",
-                  desc: "Jeneratörler için kaliteli ve garantili sarım işlemleri.",
-                  slug: "jenerator-sarimi"
-                },
-                {
-                  title: "Trafo Bakım & Sarım",
-                  img: "/trafo.jpg",
-                  desc: "Trafo sarımı ve bakımı, uzman ekibimizle.",
-                  slug: "trafo-bakim-sarim"
-                }
-              ].map((item, i) => (
+              {services.map((item, i) => (
                 <Link key={item.title} href={`/hizmetler/${item.slug}`} className="block">
                   <motion.div
                     whileHover={{ scale: 1.05, boxShadow: "0 8px 32px #0002" }}
@@ -114,7 +155,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
         {/* GALERİ */}
         <section id="galeri" className="py-16 bg-gradient-to-r from-orange-100 via-white to-blue-100">
           <div className="max-w-5xl mx-auto px-4">
@@ -125,7 +165,7 @@ export default function Home() {
               transition={{ duration: 0.7 }}
               className="text-3xl sm:text-4xl font-bold text-center text-blue-900 mb-12"
             >
-              Galeri
+              {galleryTitle}
             </motion.h2>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
               {gallery.slice(0, 8).map((item) => (
@@ -151,13 +191,12 @@ export default function Home() {
                   whileHover={{ scale: 1.05 }}
                   className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-blue-700 transition"
                 >
-                  Tüm Galeriyi Gör
+                  {galleryButton}
                 </motion.button>
               </Link>
             </div>
           </div>
         </section>
-
         {/* BLOG */}
         <section id="blog" className="py-16 bg-white/80">
           <div className="max-w-5xl mx-auto px-4">
@@ -168,7 +207,7 @@ export default function Home() {
               transition={{ duration: 0.7 }}
               className="text-3xl sm:text-4xl font-bold text-center text-blue-900 mb-12"
             >
-              Blog
+              {blogTitle}
             </motion.h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl mb-8">
               {blogs.slice(0, 3).map((blog) => (
@@ -191,13 +230,12 @@ export default function Home() {
                   whileHover={{ scale: 1.05 }}
                   className="bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold shadow-lg hover:bg-orange-600 transition"
                 >
-                  Tüm Blog Yazıları
+                  {blogButton}
                 </motion.button>
               </Link>
             </div>
           </div>
         </section>
-
         {/* HAKKIMIZDA */}
         <section id="hakkimizda" className="py-16 bg-white/90">
           <div className="max-w-4xl mx-auto px-4 flex flex-col items-center">
@@ -208,7 +246,7 @@ export default function Home() {
               transition={{ duration: 0.7 }}
               className="text-3xl sm:text-4xl font-bold text-blue-900 mb-8 text-center"
             >
-              Hakkımızda
+              {aboutTitle}
             </motion.h2>
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
@@ -218,12 +256,11 @@ export default function Home() {
               className="bg-gradient-to-br from-blue-50 to-orange-50 rounded-xl shadow-lg p-8 text-blue-800 text-lg text-center max-w-2xl"
             >
               <p>
-                Enerji Bobinaj olarak, yılların verdiği tecrübe ve uzman kadromuzla elektrik motorları, jeneratörler ve trafolar için bobinaj, bakım ve sarım hizmetleri sunuyoruz. Müşteri memnuniyetini ve kaliteyi ön planda tutarak, sektörde güvenilir bir çözüm ortağı olmayı hedefliyoruz.
+                {aboutText}
               </p>
             </motion.div>
           </div>
         </section>
-
         {/* İLETİŞİM */}
         <section id="iletisim" className="py-16 bg-gradient-to-l from-blue-100 via-white to-orange-100">
           <div className="max-w-4xl mx-auto px-4 flex flex-col items-center">
@@ -234,7 +271,7 @@ export default function Home() {
               transition={{ duration: 0.7 }}
               className="text-3xl sm:text-4xl font-bold text-blue-900 mb-8 text-center"
             >
-              İletişim
+              {contactTitle}
             </motion.h2>
             <div className="flex flex-col md:flex-row gap-8 w-full">
               <motion.form
@@ -290,15 +327,15 @@ export default function Home() {
               >
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-blue-800">Telefon:</span>
-                  <span>+90 555 123 45 67</span>
+                  <span>{contactPhone}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-blue-800">E-posta:</span>
-                  <span>info@enerjibobinaj.com</span>
+                  <span>{contactEmail}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-blue-800">Adres:</span>
-                  <span>İstanbul, Türkiye</span>
+                  <span>{contactAddress}</span>
                 </div>
               </motion.div>
             </div>
