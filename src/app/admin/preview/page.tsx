@@ -269,6 +269,112 @@ export default function AdminPreview() {
           )}
         </div>
       </section>
+      {/* HAKKIMIZDA */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-semibold text-blue-800 mb-4">Hakkımızda</h2>
+        <div className="bg-white rounded shadow p-6 flex flex-col gap-4 items-center">
+          {editKey === "about_text" ? (
+            <div className="flex gap-2 items-center w-full">
+              <textarea className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} rows={4} />
+              <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
+              <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
+            </div>
+          ) : (
+            <div className="flex items-center w-full justify-between">
+              <span className="text-blue-800 text-lg">{settings.find(s => s.key === "about_text")?.value || "Hakkımızda metni buraya gelecek."}</span>
+              <button onClick={() => handleEdit("about_text", settings.find(s => s.key === "about_text")?.value || "")} className="ml-4 text-blue-600 hover:underline">Düzenle</button>
+            </div>
+          )}
+        </div>
+      </section>
+      {/* İLETİŞİM */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-semibold text-blue-800 mb-4">İletişim</h2>
+        <div className="bg-white rounded shadow p-6 flex flex-col gap-4 items-center w-full max-w-xl">
+          {/* Telefon */}
+          {editKey === "contact_phone" ? (
+            <div className="flex gap-2 items-center w-full">
+              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
+              <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
+            </div>
+          ) : (
+            <div className="flex items-center w-full justify-between">
+              <span className="font-bold text-blue-800">Telefon:</span>
+              <span>{settings.find(s => s.key === "contact_phone")?.value || "+90 555 123 45 67"}</span>
+              <button onClick={() => handleEdit("contact_phone", settings.find(s => s.key === "contact_phone")?.value || "")} className="ml-4 text-blue-600 hover:underline">Düzenle</button>
+            </div>
+          )}
+          {/* E-posta */}
+          {editKey === "contact_email" ? (
+            <div className="flex gap-2 items-center w-full">
+              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
+              <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
+            </div>
+          ) : (
+            <div className="flex items-center w-full justify-between">
+              <span className="font-bold text-blue-800">E-posta:</span>
+              <span>{settings.find(s => s.key === "contact_email")?.value || "info@enerjibobinaj.com"}</span>
+              <button onClick={() => handleEdit("contact_email", settings.find(s => s.key === "contact_email")?.value || "")} className="ml-4 text-blue-600 hover:underline">Düzenle</button>
+            </div>
+          )}
+          {/* Adres */}
+          {editKey === "contact_address" ? (
+            <div className="flex gap-2 items-center w-full">
+              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
+              <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
+            </div>
+          ) : (
+            <div className="flex items-center w-full justify-between">
+              <span className="font-bold text-blue-800">Adres:</span>
+              <span>{settings.find(s => s.key === "contact_address")?.value || "İstanbul, Türkiye"}</span>
+              <button onClick={() => handleEdit("contact_address", settings.find(s => s.key === "contact_address")?.value || "")} className="ml-4 text-blue-600 hover:underline">Düzenle</button>
+            </div>
+          )}
+        </div>
+      </section>
+      {/* FOOTER */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-semibold text-blue-800 mb-4">Footer</h2>
+        <div className="bg-white rounded shadow p-6 flex flex-col gap-4 items-center w-full max-w-xl">
+          {/* Footer görseli */}
+          {editKey === "footer_img" ? (
+            <div className="flex gap-2 items-center w-full mb-2">
+              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} placeholder="Görsel URL" />
+              <input type="file" accept="image/*" onChange={e => {
+                const file = e.target.files?.[0];
+                if (file) handleFileUpload("footer_img", file);
+              }} />
+              <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
+              <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
+            </div>
+          ) : (
+            <div className="relative mb-4 w-32 h-16 flex items-center justify-center">
+              {settings.find(s => s.key === "footer_img")?.value ? (
+                <img src={settings.find(s => s.key === "footer_img")?.value} alt="Footer Logo" className="object-contain w-32 h-16" />
+              ) : (
+                <span className="text-gray-400">Görsel Yok</span>
+              )}
+              <button onClick={() => handleEdit("footer_img", settings.find(s => s.key === "footer_img")?.value || "")} className="absolute bottom-0 right-0 text-blue-600 hover:underline bg-white rounded-full px-2 py-1 text-xs">Düzenle</button>
+            </div>
+          )}
+          {/* Footer metni */}
+          {editKey === "footer_text" ? (
+            <div className="flex gap-2 items-center w-full">
+              <input className="border rounded p-2 w-full" value={editValue} onChange={e => setEditValue(e.target.value)} />
+              <button onClick={handleSave} disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
+              <button onClick={() => setEditKey(null)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
+            </div>
+          ) : (
+            <div className="flex items-center w-full justify-between">
+              <span className="text-blue-800 text-sm">{settings.find(s => s.key === "footer_text")?.value || "© 2025 Enerji Bobinaj"}</span>
+              <button onClick={() => handleEdit("footer_text", settings.find(s => s.key === "footer_text")?.value || "")} className="ml-4 text-blue-600 hover:underline">Düzenle</button>
+            </div>
+          )}
+        </div>
+      </section>
       {/* Diğer bölümler (hero, hizmetler, vs.) buraya eklenebilir */}
     </div>
   );

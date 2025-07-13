@@ -191,7 +191,7 @@ export default function AdminDashboard() {
             </motion.div>
           </Link>
 
-          <Link href="/admin/settings" className="block">
+          <Link href="/admin/preview" className="block">
             <motion.div
               whileHover={{ scale: 1.02 }}
               className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
