@@ -8,6 +8,8 @@ export default function ServicesAdmin() {
   const [editKey, setEditKey] = useState<string|null>(null);
   const [editValue, setEditValue] = useState<string>("");
   const [saving, setSaving] = useState(false);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [addData, setAddData] = useState({ title: '', desc: '', img: '' });
 
   useEffect(() => {
     fetchSettings();
@@ -54,6 +56,40 @@ export default function ServicesAdmin() {
     setSaving(false);
   };
 
+  const handleAdd = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    // Yeni hizmet için en büyük indexi bul
+    const maxIdx = settings
+      .filter(s => s.key.startsWith('service_') && s.key.endsWith('_title'))
+      .map(s => parseInt(s.key.split('_')[1]))
+      .filter(n => !isNaN(n))
+      .reduce((a, b) => Math.max(a, b), 0);
+    const newIdx = maxIdx + 1;
+    // 3 key birden ekle
+    await Promise.all([
+      fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: `service_${newIdx}_title`, value: addData.title }),
+      }),
+      fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: `service_${newIdx}_desc`, value: addData.desc }),
+      }),
+      fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: `service_${newIdx}_img`, value: addData.img }),
+      })
+    ]);
+    setShowAddForm(false);
+    setAddData({ title: '', desc: '', img: '' });
+    setSaving(false);
+    fetchSettings();
+  };
+
   if (loading) return <div className="p-10 text-center">Yükleniyor...</div>;
 
   const getSetting = (key: string, fallback: string = "") => settings.find(s => s.key === key)?.value || fallback;
@@ -68,6 +104,20 @@ export default function ServicesAdmin() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 p-8">
       <h1 className="text-3xl font-bold text-blue-900 mb-8">Hizmetlerimiz Yönetimi</h1>
+      <div className="flex justify-end mb-6">
+        <button onClick={() => setShowAddForm(f => !f)} className="bg-orange-600 text-white px-6 py-2 rounded-lg font-semibold shadow hover:bg-orange-700 transition">
+          + Hizmet Ekle
+        </button>
+      </div>
+      {showAddForm && (
+        <form onSubmit={handleAdd} className="bg-white rounded-xl shadow-lg p-6 mb-8 flex flex-col gap-4 max-w-md mx-auto">
+          <input className="border rounded p-2" value={addData.title} onChange={e => setAddData({ ...addData, title: e.target.value })} placeholder="Başlık" required />
+          <textarea className="border rounded p-2" value={addData.desc} onChange={e => setAddData({ ...addData, desc: e.target.value })} placeholder="Açıklama" required />
+          <input className="border rounded p-2" value={addData.img} onChange={e => setAddData({ ...addData, img: e.target.value })} placeholder="Görsel URL" required />
+          <button type="submit" disabled={saving} className="bg-green-600 text-white px-4 py-2 rounded">Kaydet</button>
+          <button type="button" onClick={() => setShowAddForm(false)} className="bg-gray-400 text-white px-4 py-2 rounded">İptal</button>
+        </form>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {services.map(service => (
           <div key={service.idx} className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
