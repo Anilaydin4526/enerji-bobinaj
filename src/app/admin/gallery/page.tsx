@@ -24,6 +24,8 @@ export default function GalleryManagement() {
     imageUrl: '',
     order: 0
   })
+  const [editId, setEditId] = useState<number|null>(null);
+  const [editData, setEditData] = useState<any>({});
 
   useEffect(() => {
     fetchGalleryImages()
@@ -79,6 +81,25 @@ export default function GalleryManagement() {
       console.error('Gallery delete error:', error)
     }
   }
+
+  const handleEdit = (img: any) => {
+    setEditId(img.id);
+    setEditData({ ...img });
+  };
+  const handleCancel = () => {
+    setEditId(null);
+    setEditData({});
+  };
+  const handleSave = async (id: number) => {
+    await fetch(`/api/admin/gallery/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editData),
+    });
+    setEditId(null);
+    setEditData({});
+    fetchGalleryImages();
+  };
 
   if (loading) {
     return (
@@ -222,21 +243,28 @@ export default function GalleryManagement() {
                   className="object-cover"
                 />
               </div>
-              <div className="p-4">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">{image.title}</h3>
-                {image.description && (
-                  <p className="text-gray-600 text-sm mb-3">{image.description}</p>
-                )}
-                <div className="flex justify-between items-center">
-                  <span className="text-xs text-gray-500">Sıra: {image.order}</span>
-                  <button
-                    onClick={() => handleDelete(image.id)}
-                    className="text-red-600 hover:text-red-900 text-sm font-medium"
-                  >
-                    Sil
-                  </button>
-                </div>
-              </div>
+              {editId === image.id ? (
+                <>
+                  <input value={editData.title} onChange={e => setEditData({ ...editData, title: e.target.value })} className="border rounded p-1 w-full mb-2" />
+                  <textarea value={editData.description || ''} onChange={e => setEditData({ ...editData, description: e.target.value })} className="border rounded p-1 w-full mb-2" />
+                  <input value={editData.imageUrl} onChange={e => setEditData({ ...editData, imageUrl: e.target.value })} className="border rounded p-1 w-full mb-2" />
+                  <input type="number" value={editData.order} onChange={e => setEditData({ ...editData, order: parseInt(e.target.value) || 0 })} className="border rounded p-1 w-full mb-2" />
+                  <button onClick={() => handleSave(image.id)} className="text-green-600 mr-2">Kaydet</button>
+                  <button onClick={handleCancel} className="text-gray-600">İptal</button>
+                </>
+              ) : (
+                <>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-2">{image.title}</h3>
+                  {image.description && (
+                    <p className="text-gray-600 text-sm mb-3">{image.description}</p>
+                  )}
+                  <div className="flex justify-between items-center">
+                    <span className="text-xs text-gray-500">Sıra: {image.order}</span>
+                    <button onClick={() => handleEdit(image)} className="text-blue-600 mr-2">Düzenle</button>
+                    <button onClick={() => handleDelete(image.id)} className="text-red-600">Sil</button>
+                  </div>
+                </>
+              )}
             </motion.div>
           ))}
         </div>

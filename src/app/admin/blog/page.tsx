@@ -23,6 +23,8 @@ export default function BlogManagement() {
     image: '',
     published: false
   })
+  const [editId, setEditId] = useState<number|null>(null);
+  const [editData, setEditData] = useState<any>({});
 
   useEffect(() => {
     fetchBlogPosts()
@@ -78,6 +80,25 @@ export default function BlogManagement() {
       console.error('Blog delete error:', error)
     }
   }
+
+  const handleEdit = (post: any) => {
+    setEditId(post.id);
+    setEditData({ ...post });
+  };
+  const handleCancel = () => {
+    setEditId(null);
+    setEditData({});
+  };
+  const handleSave = async (id: number) => {
+    await fetch(`/api/admin/blog/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editData),
+    });
+    setEditId(null);
+    setEditData({});
+    fetchBlogPosts();
+  };
 
   if (loading) {
     return (
@@ -248,30 +269,49 @@ export default function BlogManagement() {
                 {blogPosts.map((post) => (
                   <tr key={post.id}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-medium text-gray-900">{post.title}</div>
+                      {editId === post.id ? (
+                        <input value={editData.title} onChange={e => setEditData({ ...editData, title: e.target.value })} className="border rounded p-1 w-full" />
+                      ) : (
+                        <div className="text-sm font-medium text-gray-900">{post.title}</div>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">{post.slug}</div>
+                      {editId === post.id ? (
+                        <input value={editData.slug} onChange={e => setEditData({ ...editData, slug: e.target.value })} className="border rounded p-1 w-full" />
+                      ) : (
+                        <div className="text-sm text-gray-500">{post.slug}</div>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        post.published
-                          ? 'bg-green-100 text-green-800'
-                          : 'bg-yellow-100 text-yellow-800'
-                      }`}>
-                        {post.published ? 'Yayında' : 'Taslak'}
-                      </span>
+                      {editId === post.id ? (
+                        <input type="checkbox" checked={editData.published} onChange={e => setEditData({ ...editData, published: e.target.checked })} />
+                      ) : (
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          post.published
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-yellow-100 text-yellow-800'
+                        }`}>
+                          {post.published ? 'Yayında' : 'Taslak'}
+                        </span>
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(post.createdAt).toLocaleDateString('tr-TR')}
+                      {editId === post.id ? (
+                        <input value={editData.createdAt} onChange={e => setEditData({ ...editData, createdAt: e.target.value })} className="border rounded p-1 w-full" />
+                      ) : (
+                        new Date(post.createdAt).toLocaleDateString('tr-TR')
+                      )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                      <button
-                        onClick={() => handleDelete(post.id)}
-                        className="text-red-600 hover:text-red-900"
-                      >
-                        Sil
-                      </button>
+                      {editId === post.id ? (
+                        <>
+                          <button onClick={() => handleSave(post.id)} className="text-green-600 mr-2">Kaydet</button>
+                          <button onClick={handleCancel} className="text-gray-600">İptal</button>
+                        </>
+                      ) : (
+                        <button onClick={() => handleEdit(post)} className="text-blue-600 mr-2">Düzenle</button>
+                      )}
+                      <button onClick={() => handleDelete(post.id)} className="text-red-600">Sil</button>
                     </td>
                   </tr>
                 ))}
