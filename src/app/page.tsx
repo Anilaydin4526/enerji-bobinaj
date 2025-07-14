@@ -32,6 +32,11 @@ type Slider = {
   buttonLink?: string;
 };
 
+export const metadata = {
+  title: "Enerji Bobinaj Gaziantep | Elektrik Motor Sarımı ve Bakım Hizmetleri",
+  description: "Elektrik motor sarımı ve trafo bakımında uzman çözüm. Hızlı servis, uygun fiyat. Hemen keşfet!",
+};
+
 export default function Home() {
   const [sliders, setSliders] = useState<Slider[]>([]);
   const [gallery, setGallery] = useState<Gallery[]>([]);
@@ -132,7 +137,9 @@ export default function Home() {
                       style={{ objectFit: 'cover' }}
                       className="object-cover object-center absolute inset-0 opacity-40 -z-10 w-full h-full"
                     />
-                    <h1 className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4 z-10 relative">{slide.title}</h1>
+                    <h1 className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4 z-10 relative">
+                      Elektrik Motor Sarımı ve Bobinaj Hizmetleri
+                    </h1>
                     <p className="text-xl sm:text-2xl text-blue-800 mb-8 z-10 relative">{slide.description}</p>
                     {slide.buttonText && slide.buttonLink && (
                       <a href={slide.buttonLink} className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition z-10 relative">{slide.buttonText}</a>
