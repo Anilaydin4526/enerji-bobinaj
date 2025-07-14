@@ -110,9 +110,9 @@ export default function Home() {
 
   return (
     <div className="w-full min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 flex flex-col overflow-x-hidden">
-      <div className="pt-20 w-full">
+      <div className="w-full">
         {/* HERO SECTION */}
-        <section id="hero" className="relative flex-1 flex flex-col items-center justify-center text-center min-h-screen w-full p-0 sm:p-0 overflow-hidden">
+        <section id="hero" className="relative flex-1 flex flex-col items-center justify-center text-center min-h-screen w-full p-0 overflow-hidden">
           {sliders.length > 0 ? (
             <Swiper
               modules={[Autoplay, Navigation]}
