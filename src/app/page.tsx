@@ -119,12 +119,12 @@ export default function Home() {
               loop
               autoplay={{ delay: 5000, disableOnInteraction: false }}
               navigation
-              className="w-full h-full"
-              style={{ minHeight: '100vh' }}
+              className="w-full h-screen"
+              style={{ minHeight: '100vh', height: '100vh' }}
             >
               {sliders.map((slide) => (
-                <SwiperSlide key={slide.id}>
-                  <div className="relative flex flex-col items-center justify-center text-center min-h-screen w-full p-0">
+                <SwiperSlide key={slide.id} className="h-screen" style={{ height: '100vh' }}>
+                  <div className="relative flex flex-col items-center justify-center text-center h-screen w-full p-0">
                     <Image
                       src={slide.imageUrl}
                       alt={slide.title}
@@ -132,17 +132,14 @@ export default function Home() {
                       style={{ objectFit: 'cover' }}
                       className="object-cover object-center absolute inset-0 opacity-40 -z-10 w-full h-full"
                     />
-                    <h1 className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4 z-10">{slide.title}</h1>
-                    <p className="text-xl sm:text-2xl text-blue-800 mb-8 z-10">{slide.description}</p>
+                    <h1 className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4 z-10 relative">{slide.title}</h1>
+                    <p className="text-xl sm:text-2xl text-blue-800 mb-8 z-10 relative">{slide.description}</p>
                     {slide.buttonText && slide.buttonLink && (
-                      <a href={slide.buttonLink} className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition z-10">{slide.buttonText}</a>
+                      <a href={slide.buttonLink} className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition z-10 relative">{slide.buttonText}</a>
                     )}
                   </div>
                 </SwiperSlide>
               ))}
-              {/* Swiper default navigation buttons */}
-              <div className="swiper-button-prev !text-blue-900 !left-4" />
-              <div className="swiper-button-next !text-blue-900 !right-4" />
             </Swiper>
           ) : (
             <>
