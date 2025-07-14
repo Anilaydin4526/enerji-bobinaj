@@ -1,24 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://enerji-bobinaj.vercel.app/</loc>
-  </url>
-  <url>
-    <loc>https://enerji-bobinaj.vercel.app/hizmetler/service-1</loc>
-  </url>
-  <url>
-    <loc>https://enerji-bobinaj.vercel.app/hizmetler/service-2</loc>
-  </url>
-  <url>
-    <loc>https://enerji-bobinaj.vercel.app/galeri/1</loc>
-  </url>
-  <url>
-    <loc>https://enerji-bobinaj.vercel.app/galeri/2</loc>
-  </url>
-  <url>
-    <loc>https://enerji-bobinaj.vercel.app/blog/1</loc>
-  </url>
-  <url>
-    <loc>https://enerji-bobinaj.vercel.app/blog/2</loc>
-  </url>
-</urlset> 
+<urlset
+      xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+            http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!-- created with Free Online Sitemap Generator www.xml-sitemaps.com -->
+
+
+<url>
+  <loc>https://enerjibobinaj.online/</loc>
+  <lastmod>2025-07-14T08:13:12+00:00</lastmod>
+  <priority>1.00</priority>
+</url>
+<url>
+  <loc>https://enerjibobinaj.online/admin/login</loc>
+  <lastmod>2025-07-14T08:13:12+00:00</lastmod>
+  <priority>0.80</priority>
+</url>
+
+
+</urlset>
