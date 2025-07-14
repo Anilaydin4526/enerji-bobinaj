@@ -4,7 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from 'swiper/react';
+import { Autoplay, Navigation } from 'swiper/modules';
 import 'swiper/css';
+import 'swiper/css/navigation';
 
 type Blog = {
   id: number;
@@ -110,26 +112,37 @@ export default function Home() {
     <div className="w-full min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 flex flex-col overflow-x-hidden">
       <div className="pt-20 w-full">
         {/* HERO SECTION */}
-        <section id="hero" className="relative flex-1 flex flex-col items-center justify-center text-center min-h-screen w-full py-16 sm:py-32 overflow-hidden">
+        <section id="hero" className="relative flex-1 flex flex-col items-center justify-center text-center min-h-screen w-full p-0 sm:p-0 overflow-hidden">
           {sliders.length > 0 ? (
-            <Swiper loop autoplay={{ delay: 5000, disableOnInteraction: false }} className="w-full h-full">
+            <Swiper
+              modules={[Autoplay, Navigation]}
+              loop
+              autoplay={{ delay: 5000, disableOnInteraction: false }}
+              navigation
+              className="w-full h-full"
+              style={{ minHeight: '100vh' }}
+            >
               {sliders.map((slide) => (
                 <SwiperSlide key={slide.id}>
-                  <div className="relative flex flex-col items-center justify-center text-center min-h-[60vh] w-full py-12">
+                  <div className="relative flex flex-col items-center justify-center text-center min-h-screen w-full p-0">
                     <Image
                       src={slide.imageUrl}
                       alt={slide.title}
                       fill
+                      style={{ objectFit: 'cover' }}
                       className="object-cover object-center absolute inset-0 opacity-40 -z-10 w-full h-full"
                     />
-                    <h1 className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4">{slide.title}</h1>
-                    <p className="text-xl sm:text-2xl text-blue-800 mb-8">{slide.description}</p>
+                    <h1 className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4 z-10">{slide.title}</h1>
+                    <p className="text-xl sm:text-2xl text-blue-800 mb-8 z-10">{slide.description}</p>
                     {slide.buttonText && slide.buttonLink && (
-                      <a href={slide.buttonLink} className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition">{slide.buttonText}</a>
+                      <a href={slide.buttonLink} className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition z-10">{slide.buttonText}</a>
                     )}
                   </div>
                 </SwiperSlide>
               ))}
+              {/* Swiper default navigation buttons */}
+              <div className="swiper-button-prev !text-blue-900 !left-4" />
+              <div className="swiper-button-next !text-blue-900 !right-4" />
             </Swiper>
           ) : (
             <>
