@@ -224,6 +224,23 @@ export default function AdminDashboard() {
               </div>
             </motion.div>
           </Link>
+
+          <Link href="/admin/slider" className="block">
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+            >
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">Slider Yönetimi</h3>
+                  <p className="text-gray-600">Ana sayfa sliderlarını düzenle</p>
+                </div>
+                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </motion.div>
+          </Link>
         </motion.div>
       </main>
     </div>
