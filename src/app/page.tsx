@@ -20,14 +20,25 @@ type Gallery = {
   description?: string;
   [key: string]: any;
 };
+type Slider = {
+  id: number;
+  title: string;
+  description?: string;
+  imageUrl: string;
+  order: number;
+  buttonText?: string;
+  buttonLink?: string;
+};
 
 export default function Home() {
+  const [sliders, setSliders] = useState<Slider[]>([]);
   const [gallery, setGallery] = useState<Gallery[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
   const [settings, setSettings] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    fetch("/api/admin/slider").then(r => r.json()).then(setSliders);
     fetch("/api/public/gallery").then(r => r.json()).then(setGallery);
     fetch("/api/public/blog").then(r => r.json()).then(setBlogs);
     fetch("/api/public/settings").then(r => r.json()).then(data => {
@@ -48,17 +59,17 @@ export default function Home() {
   const heroButton = getSetting("hero_button", "Hizmetlerimizi Keşfedin");
 
   // SLIDER
-  const sliderKeys = settings.filter(s => s.key.startsWith('slider_') && s.key.match(/^slider_\d+_title$/));
-  const sliders = sliderKeys.map(s => {
-    const idx = parseInt(s.key.split('_')[1]);
-    return {
-      title: s.value,
-      desc: getSetting(`slider_${idx}_desc`, ""),
-      img: getSetting(`slider_${idx}_img`, heroImg),
-      button: getSetting(`slider_${idx}_button`, "Detaylı Bilgi"),
-      idx
-    };
-  }).filter(s => s.title && s.title.trim() !== "").sort((a, b) => a.idx - b.idx);
+  // const sliderKeys = settings.filter(s => s.key.startsWith('slider_') && s.key.match(/^slider_\d+_title$/));
+  // const sliders = sliderKeys.map(s => {
+  //   const idx = parseInt(s.key.split('_')[1]);
+  //   return {
+  //     title: s.value,
+  //     desc: getSetting(`slider_${idx}_desc`, ""),
+  //     img: getSetting(`slider_${idx}_img`, heroImg),
+  //     button: getSetting(`slider_${idx}_button`, "Detaylı Bilgi"),
+  //     idx
+  //   };
+  // }).filter(s => s.title && s.title.trim() !== "").sort((a, b) => a.idx - b.idx);
 
   // HİZMETLER
   // Tüm dinamik hizmetleri bul
@@ -102,18 +113,20 @@ export default function Home() {
         <section id="hero" className="relative flex-1 flex flex-col items-center justify-center text-center min-h-screen w-full py-16 sm:py-32 overflow-hidden">
           {sliders.length > 0 ? (
             <Swiper loop autoplay={{ delay: 5000, disableOnInteraction: false }} className="w-full h-full">
-              {sliders.map((slide, i) => (
-                <SwiperSlide key={slide.idx}>
+              {sliders.map((slide) => (
+                <SwiperSlide key={slide.id}>
                   <div className="relative flex flex-col items-center justify-center text-center min-h-[60vh] w-full py-12">
                     <Image
-                      src={slide.img}
+                      src={slide.imageUrl}
                       alt={slide.title}
                       fill
                       className="object-cover object-center absolute inset-0 opacity-40 -z-10 w-full h-full"
                     />
                     <h1 className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4">{slide.title}</h1>
-                    <p className="text-xl sm:text-2xl text-blue-800 mb-8">{slide.desc}</p>
-                    {slide.button && <a href="#hizmetler" className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition">{slide.button}</a>}
+                    <p className="text-xl sm:text-2xl text-blue-800 mb-8">{slide.description}</p>
+                    {slide.buttonText && slide.buttonLink && (
+                      <a href={slide.buttonLink} className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition">{slide.buttonText}</a>
+                    )}
                   </div>
                 </SwiperSlide>
               ))}

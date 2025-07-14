@@ -65,4 +65,16 @@ model ContactMessage {
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
 }
+
+model Slider {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  imageUrl    String
+  order       Int      @default(0)
+  buttonText  String?
+  buttonLink  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
  

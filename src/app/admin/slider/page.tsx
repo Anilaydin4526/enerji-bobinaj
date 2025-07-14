@@ -2,23 +2,48 @@
 import { useEffect, useState } from "react";
 import { uploadToCloudinary } from '@/lib/uploadToCloudinary';
 
+// Yeni Slider tipi
+interface Slider {
+  id: number;
+  title: string;
+  description?: string;
+  imageUrl: string;
+  order: number;
+  buttonText?: string;
+  buttonLink?: string;
+}
+
 export default function SliderAdmin() {
-  const [settings, setSettings] = useState<any[]>([]);
+  const [sliders, setSliders] = useState<Slider[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
-  const [addData, setAddData] = useState({ title: '', desc: '', img: '', button: '' });
-  const [editIdx, setEditIdx] = useState<number|null>(null);
-  const [editForm, setEditForm] = useState({ title: '', desc: '', img: '', button: '' });
+  const [addData, setAddData] = useState({
+    title: '',
+    description: '',
+    imageUrl: '',
+    order: 0,
+    buttonText: '',
+    buttonLink: ''
+  });
+  const [editId, setEditId] = useState<number|null>(null);
+  const [editForm, setEditForm] = useState({
+    title: '',
+    description: '',
+    imageUrl: '',
+    order: 0,
+    buttonText: '',
+    buttonLink: ''
+  });
 
-  useEffect(() => { fetchSettings(); }, []);
+  useEffect(() => { fetchSliders(); }, []);
 
-  const fetchSettings = async () => {
+  const fetchSliders = async () => {
     setLoading(true);
-    const res = await fetch("/api/admin/settings");
+    const res = await fetch("/api/admin/slider");
     if (res.ok) {
       const data = await res.json();
-      setSettings(data);
+      setSliders(data);
     }
     setLoading(false);
   };
@@ -26,73 +51,63 @@ export default function SliderAdmin() {
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const maxIdx = settings
-      .filter(s => s.key.startsWith('slider_') && s.key.endsWith('_title'))
-      .map(s => parseInt(s.key.split('_')[1]))
-      .filter(n => !isNaN(n))
-      .reduce((a, b) => Math.max(a, b), 0);
-    const newIdx = maxIdx + 1;
-    await Promise.all([
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${newIdx}_title`, value: addData.title }) }),
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${newIdx}_desc`, value: addData.desc }) }),
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${newIdx}_img`, value: addData.img }) }),
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${newIdx}_button`, value: addData.button }) })
-    ]);
-    setShowAddForm(false);
-    setAddData({ title: '', desc: '', img: '', button: '' });
+    const order = sliders.length > 0 ? Math.max(...sliders.map(s => s.order)) + 1 : 1;
+    const res = await fetch('/api/admin/slider', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...addData, order })
+    });
+    if (res.ok) {
+      setShowAddForm(false);
+      setAddData({ title: '', description: '', imageUrl: '', order: 0, buttonText: '', buttonLink: '' });
+      fetchSliders();
+    }
     setSaving(false);
-    fetchSettings();
   };
 
-  const handleEditOpen = (slider: any) => {
-    setEditIdx(slider.idx);
-    setEditForm({ title: slider.title, desc: slider.desc, img: slider.img, button: slider.button });
+  const handleEditOpen = (slider: Slider) => {
+    setEditId(slider.id);
+    setEditForm({
+      title: slider.title,
+      description: slider.description || '',
+      imageUrl: slider.imageUrl,
+      order: slider.order,
+      buttonText: slider.buttonText || '',
+      buttonLink: slider.buttonLink || ''
+    });
   };
   const handleEditSave = async () => {
-    if (editIdx == null) return;
+    if (editId == null) return;
     setSaving(true);
-    await Promise.all([
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${editIdx}_title`, value: editForm.title }) }),
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${editIdx}_desc`, value: editForm.desc }) }),
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${editIdx}_img`, value: editForm.img }) }),
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${editIdx}_button`, value: editForm.button }) })
-    ]);
-    setEditIdx(null);
-    setEditForm({ title: '', desc: '', img: '', button: '' });
+    const res = await fetch('/api/admin/slider', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: editId, ...editForm })
+    });
+    if (res.ok) {
+      setEditId(null);
+      setEditForm({ title: '', description: '', imageUrl: '', order: 0, buttonText: '', buttonLink: '' });
+      fetchSliders();
+    }
     setSaving(false);
-    fetchSettings();
   };
   const handleEditCancel = () => {
-    setEditIdx(null);
-    setEditForm({ title: '', desc: '', img: '', button: '' });
+    setEditId(null);
+    setEditForm({ title: '', description: '', imageUrl: '', order: 0, buttonText: '', buttonLink: '' });
   };
-  const handleDelete = async (idx: number) => {
+  const handleDelete = async (id: number) => {
     if (!confirm('Bu sliderı silmek istediğinizden emin misiniz?')) return;
     setSaving(true);
-    await Promise.all([
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${idx}_title`, value: '' }) }),
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${idx}_desc`, value: '' }) }),
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${idx}_img`, value: '' }) }),
-      fetch('/api/admin/settings', { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ key: `slider_${idx}_button`, value: '' }) })
-    ]);
+    const res = await fetch('/api/admin/slider', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id })
+    });
+    if (res.ok) fetchSliders();
     setSaving(false);
-    fetchSettings();
   };
 
   if (loading) return <div className="p-10 text-center">Yükleniyor...</div>;
-
-  const getSetting = (key: string, fallback: string = "") => settings.find(s => s.key === key)?.value || fallback;
-  const sliderKeys = settings.filter(s => s.key.startsWith('slider_') && s.key.match(/^slider_\d+_title$/));
-  const sliders = sliderKeys.map(s => {
-    const idx = parseInt(s.key.split('_')[1]);
-    return {
-      title: s.value,
-      desc: getSetting(`slider_${idx}_desc`, ""),
-      img: getSetting(`slider_${idx}_img`, ""),
-      button: getSetting(`slider_${idx}_button`, ""),
-      idx
-    };
-  }).filter(s => s.title && s.title.trim() !== "").sort((a, b) => a.idx - b.idx);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-orange-100 p-8">
@@ -106,16 +121,17 @@ export default function SliderAdmin() {
       {showAddForm && (
         <form onSubmit={handleAdd} className="bg-white rounded-xl shadow-lg p-6 mb-8 flex flex-col gap-4 max-w-md mx-auto">
           <input className="border rounded p-2 text-black" value={addData.title} onChange={e => setAddData({ ...addData, title: e.target.value })} placeholder="Başlık" required />
-          <textarea className="border rounded p-2 text-black" value={addData.desc} onChange={e => setAddData({ ...addData, desc: e.target.value })} placeholder="Açıklama" required />
-          <input className="border rounded p-2 text-black" value={addData.button} onChange={e => setAddData({ ...addData, button: e.target.value })} placeholder="Buton Yazısı (isteğe bağlı)" />
-          <input className="border rounded p-2 text-black" value={addData.img} onChange={e => setAddData({ ...addData, img: e.target.value })} placeholder="Görsel URL" required />
+          <textarea className="border rounded p-2 text-black" value={addData.description} onChange={e => setAddData({ ...addData, description: e.target.value })} placeholder="Açıklama" required />
+          <input className="border rounded p-2 text-black" value={addData.buttonText} onChange={e => setAddData({ ...addData, buttonText: e.target.value })} placeholder="Buton Yazısı (isteğe bağlı)" />
+          <input className="border rounded p-2 text-black" value={addData.buttonLink} onChange={e => setAddData({ ...addData, buttonLink: e.target.value })} placeholder="Buton Linki (isteğe bağlı)" />
+          <input className="border rounded p-2 text-black" value={addData.imageUrl} onChange={e => setAddData({ ...addData, imageUrl: e.target.value })} placeholder="Görsel URL" required />
           <input type="file" accept="image/*" onChange={async (e) => {
             const file = e.target.files?.[0];
             if (!file) return;
             setSaving(true);
             try {
               const url = await uploadToCloudinary(file);
-              setAddData(f => ({ ...f, img: url }));
+              setAddData(f => ({ ...f, imageUrl: url }));
             } catch (err) {
               alert(err instanceof Error ? err.message : String(err));
             }
@@ -127,20 +143,21 @@ export default function SliderAdmin() {
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {sliders.map(slider => (
-          <div key={slider.idx} className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
-            {editIdx === slider.idx ? (
+          <div key={slider.id} className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center text-center">
+            {editId === slider.id ? (
               <form onSubmit={e => { e.preventDefault(); handleEditSave(); }} className="flex flex-col gap-2 w-full">
                 <input className="border rounded p-2 text-black" value={editForm.title} onChange={e => setEditForm(f => ({ ...f, title: e.target.value }))} placeholder="Başlık" required />
-                <textarea className="border rounded p-2 text-black" value={editForm.desc} onChange={e => setEditForm(f => ({ ...f, desc: e.target.value }))} placeholder="Açıklama" required />
-                <input className="border rounded p-2 text-black" value={editForm.button} onChange={e => setEditForm(f => ({ ...f, button: e.target.value }))} placeholder="Buton Yazısı (isteğe bağlı)" />
-                <input className="border rounded p-2 text-black" value={editForm.img} onChange={e => setEditForm(f => ({ ...f, img: e.target.value }))} placeholder="Görsel URL" required />
+                <textarea className="border rounded p-2 text-black" value={editForm.description} onChange={e => setEditForm(f => ({ ...f, description: e.target.value }))} placeholder="Açıklama" required />
+                <input className="border rounded p-2 text-black" value={editForm.buttonText} onChange={e => setEditForm(f => ({ ...f, buttonText: e.target.value }))} placeholder="Buton Yazısı (isteğe bağlı)" />
+                <input className="border rounded p-2 text-black" value={editForm.buttonLink} onChange={e => setEditForm(f => ({ ...f, buttonLink: e.target.value }))} placeholder="Buton Linki (isteğe bağlı)" />
+                <input className="border rounded p-2 text-black" value={editForm.imageUrl} onChange={e => setEditForm(f => ({ ...f, imageUrl: e.target.value }))} placeholder="Görsel URL" required />
                 <input type="file" accept="image/*" onChange={async (e) => {
                   const file = e.target.files?.[0];
                   if (!file) return;
                   setSaving(true);
                   try {
                     const url = await uploadToCloudinary(file);
-                    setEditForm(f => ({ ...f, img: url }));
+                    setEditForm(f => ({ ...f, imageUrl: url }));
                   } catch (err) {
                     alert(err instanceof Error ? err.message : String(err));
                   }
@@ -153,12 +170,13 @@ export default function SliderAdmin() {
               </form>
             ) : (
               <>
-                <img src={slider.img} alt={slider.title} className="rounded-lg mb-4 object-cover w-32 h-32" />
+                <img src={slider.imageUrl} alt={slider.title} className="rounded-lg mb-4 object-cover w-32 h-32" />
                 <h3 className="text-xl font-semibold text-blue-800 mb-2">{slider.title}</h3>
-                <p className="text-blue-700 text-sm mb-2">{slider.desc}</p>
-                {slider.button && <div className="text-orange-600 font-medium mb-2">{slider.button}</div>}
+                <p className="text-blue-700 text-sm mb-2">{slider.description}</p>
+                {slider.buttonText && <div className="text-orange-600 font-medium mb-2">{slider.buttonText}</div>}
+                {slider.buttonLink && <div className="text-blue-600 text-xs mb-2">{slider.buttonLink}</div>}
                 <button onClick={() => handleEditOpen(slider)} className="text-blue-600">Düzenle</button>
-                <button onClick={() => handleDelete(slider.idx)} className="text-red-600">Sil</button>
+                <button onClick={() => handleDelete(slider.id)} className="text-red-600">Sil</button>
               </>
             )}
           </div>
