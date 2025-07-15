@@ -104,33 +104,26 @@ export default function HomeClient() {
               loop
               autoplay={{ delay: 5000, disableOnInteraction: false }}
               navigation
-              className="w-full"
+              className="w-full h-screen"
+              style={{ minHeight: '100vh', height: '100vh' }}
             >
               {sliders.map((slide) => (
-                <SwiperSlide
-                  key={slide.id}
-                  className="w-full h-[50vh] min-h-[220px] max-h-[400px] sm:h-screen sm:min-h-[400px] sm:max-h-none"
-                >
-                  <div className="relative w-full h-full flex flex-col items-center justify-center text-center overflow-hidden">
+                <SwiperSlide key={slide.id} className="h-screen" style={{ height: '100vh' }}>
+                  <div className="relative flex flex-col items-center justify-center text-center h-screen w-full p-0">
                     <Image
                       src={slide.imageUrl}
                       alt={slide.title}
                       fill
                       priority
-                      style={{ objectFit: 'cover' }}
-                      className="object-cover object-center w-full h-full absolute inset-0 opacity-40 -z-10"
+                      style={{ objectFit: 'contain' }}
+                      className="object-contain w-full h-full absolute inset-0 opacity-40 -z-10"
                     />
-                    <h1 className="text-lg sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-2 sm:mb-4 z-10 relative">
+                    <h1 className="text-4xl sm:text-6xl font-bold text-blue-900 drop-shadow-lg mb-4 z-10 relative">
                       Elektrik Motor Sarımı ve Bobinaj Hizmetleri
                     </h1>
-                    <p className="text-xs sm:text-2xl text-blue-800 mb-4 sm:mb-8 z-10 relative">{slide.description}</p>
+                    <p className="text-xl sm:text-2xl text-blue-800 mb-8 z-10 relative">{slide.description}</p>
                     {slide.buttonText && slide.buttonLink && (
-                      <a
-                        href={slide.buttonLink}
-                        className="inline-block bg-orange-500 text-white px-4 sm:px-8 py-1 sm:py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition z-10 relative text-xs sm:text-base"
-                      >
-                        {slide.buttonText}
-                      </a>
+                      <a href={slide.buttonLink} className="inline-block bg-orange-500 text-white px-8 py-3 rounded-full font-semibold shadow-lg hover:bg-orange-600 transition z-10 relative">{slide.buttonText}</a>
                     )}
                   </div>
                 </SwiperSlide>
